@@ -1,9 +1,10 @@
 import { useState } from 'react'
-
+import RouterJsx from './router'
 function App() {
   const [count, setCount] = useState()
 
-  return <div>app</div>
+  return <RouterJsx />
+
 }
 
 export default App
