@@ -1,15 +1,18 @@
-import React from "react"
+import React, { useEffect } from "react"
 import "./header.scss"
 
 const HeaderJsx = () => {
-    return <div className="h-header">
+    const handleConnectMeatMask = async () => {
+        const result = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    }
+    return <header className="h-header">
         <div className="h-logo">
-            <h1>DBChain 盲盒</h1>
+            <h2>DBChain 盲盒</h2>
         </div>
         <div className="h-connect">
-            <div>连接钱包</div>
+            <span onClick={handleConnectMeatMask}>连接MetaMask</span>
         </div>
-    </div>
+    </header>
 }
 
 export default HeaderJsx

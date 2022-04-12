@@ -9,6 +9,7 @@
     "prettier": "npx prettier --write ."
   },
   "dependencies": {
+    "antd": "^4.19.5",
     "prettier": "^2.6.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
