@@ -5,7 +5,7 @@ import HeaderJsx from '../../components/views/Header'
 import BannerJsx from "../../components/views/banner"
 import "./home.scss"
 const HomeJsx = () => {
-    return <div className='home'>
+    return <div className='root-page'>
         <HeaderJsx />
         <BannerJsx />
         <main className='body'>
