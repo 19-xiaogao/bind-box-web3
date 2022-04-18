@@ -5,9 +5,9 @@ import HeaderJsx from '../../components/views/Header'
 import "./allBindBox.scss"
 function AllBindBoxJsx() {
 
-    return <div className=' root-page'>
+    return <div className='root-page'>
         <HeaderJsx />
-        <div className='a-all-box'>
+        <main>
             <div className='r-header'>
                 <h2>全部盲盒系列</h2>
                 <Input className='search' placeholder='请输入盲盒的名称或者合约地址' prefix={<SearchOutlined />} />
@@ -90,7 +90,7 @@ function AllBindBoxJsx() {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
 }

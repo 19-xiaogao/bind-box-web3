@@ -1,0 +1,120 @@
+.p-header {
+    height: 200px;
+    width: 100vw;
+    background-color: beige;
+    position: relative;
+
+    .content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            overflow: hidden;
+            border-radius: 50%;
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        p {
+            margin-top: 20px;
+            font-weight: 500;
+            font-size: 16px;
+        }
+    }
+}
+
+.table {
+    width: 100%;
+    margin-top: 20px;
+
+    .sidebar {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        // position: absolute;
+
+        div {
+            appearance: none;
+            user-select: none;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            font-size: 14px;
+            font-family: inherit;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            outline: none;
+            padding: 10px 16px;
+            line-height: 20px;
+            color: rgb(24, 26, 32);
+            border-radius: 4px;
+            min-height: 24px;
+            min-width: 120px;
+
+            &:hover {
+                color: rgb(252, 213, 53);
+            }
+        }
+
+        div:nth-child(1) {
+            margin-right: 20px;
+            background-color: rgb(252, 213, 53);
+        }
+
+    }
+
+    .t-content {
+        margin-top: 20px;
+        display: grid;
+        grid-gap: 10px;
+        grid-row-gap: 20px;
+        grid-template-columns: repeat(4, 1fr);
+
+        .b-box {
+            position: relative;
+            height: 238px;
+            width: 238px;
+            background-color: beige;
+            margin-right: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+
+            .title {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                height: 40px;
+                line-height: 40px;
+                text-align: center;
+                background: linear-gradient(109.81deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.17) 103.77%);
+                backdrop-filter: blur(10px);
+
+                span {
+                    color: #fff;
+                    font-weight: 500;
+                    font-size: 16px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+            }
+        }
+    }
+}
