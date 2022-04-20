@@ -37,6 +37,7 @@
     .box-d {
         position: relative;
         box-sizing: border-box;
+        cursor: pointer;
         width: 351px;
         height: 217px;
         border-radius: 12px;
@@ -75,8 +76,10 @@
                 transition: filter .3s;
 
                 img {
-                    height: 123px;
+                    height: 100%;
                     width: 100%;
+                    object-fit: cover;
+                    object-position: center;
                 }
             }
         }
@@ -112,8 +115,7 @@
                 }
 
                 span:nth-child(1) {
-                    width: 20px;
-                    height: 20px;
+                    // line-height: 16px;
                     border-radius: 50%;
                     margin-right: 4px;
                 }
@@ -122,7 +124,8 @@
                     font-weight: 400;
                     font-size: 12px;
                     line-height: 16px;
-                    color: rgb(71, 77, 87);
+                    font-weight: 700;
+                    color: rgb(30, 35, 41);
                     flex: 1 1 0%;
                 }
 

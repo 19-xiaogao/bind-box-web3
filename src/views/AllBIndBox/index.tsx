@@ -1,10 +1,54 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input } from "antd"
 import { SearchOutlined } from "@ant-design/icons"
 import HeaderJsx from '../../components/views/Header'
 import "./allBindBox.scss"
-function AllBindBoxJsx() {
+import { formatTime } from "@/utils"
+import { queryBindBoxApi } from "@/api/api"
+import { useNavigate } from "react-router-dom";
 
+function AllBindBoxJsx() {
+    const [bindBoxList, setBindBoxList] = useState([])
+    const navigate = useNavigate();
+
+    const getBindBox = async (offset: number, limit: number) => {
+        try {
+            const result = await queryBindBoxApi(offset, limit)
+            setBindBoxList(result)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleBindBoxDetailClick = (item: any) => {
+        navigate('/bindBoxDetails?id=' + item.id)
+    }
+
+    const renderBindList = () => {
+        return bindBoxList.map((item: any) => (<div className='box-d' key={item.id} onClick={() => handleBindBoxDetailClick(item)}>
+            <div className='box-d-top'>
+                <div className='time'>
+                    {formatTime(item.release_time)}
+                </div>
+                <span className='img'>
+                    <img src={item.desc.nft_metadatas[0].image}></img>
+                </span>
+            </div>
+            <div className='box-d-bottom'>
+                <div className='title'> {item.desc.name}</div>
+                <div className='desc'>
+                    <span>价格</span>
+                    <span>{item.price}</span>
+                    <span>发行数量</span>
+                    <span>{item.release_number}</span>
+                </div>
+            </div>
+        </div>))
+    }
+
+    useEffect(() => {
+        getBindBox(0, 9)
+    }, [])
     return <div className='root-page'>
         <HeaderJsx />
         <main>
@@ -13,82 +57,7 @@ function AllBindBoxJsx() {
                 <Input className='search' placeholder='请输入盲盒的名称或者合约地址' prefix={<SearchOutlined />} />
             </div>
             <div className='box-list'>
-                <div className='box-d'>
-                    <div className='box-d-top'>
-                        <div className='time'>
-                            2022-04-11
-                        </div>
-                        <span className='img'>
-                            <img src='https://public.nftstatic.com/static/nft/res/1a213b59260446cda3414e32b7a60d82.png'></img>
-                        </span>
-                    </div>
-                    <div className='box-d-bottom'>
-                        <div className='title'>Egg-citing Easter Extravaganza</div>
-                        <div className='desc'>
-                            <span>头</span>
-                            <span>BinanceNFT</span>
-                            <span>发行数量</span>
-                            <span>63,000</span>
-                        </div>
-                    </div>
-                </div>
-                <div className='box-d'>
-                    <div className='box-d-top'>
-                        <div className='time'>
-                            2022-04-11
-                        </div>
-                        <span className='img'>
-                            <img src='https://public.nftstatic.com/static/nft/res/1a213b59260446cda3414e32b7a60d82.png'></img>
-                        </span>
-                    </div>
-                    <div className='box-d-bottom'>
-                        <div className='title'>Egg-citing Easter Extravaganza</div>
-                        <div className='desc'>
-                            <span>头</span>
-                            <span>BinanceNFT</span>
-                            <span>发行数量</span>
-                            <span>63,000</span>
-                        </div>
-                    </div>
-                </div>
-                <div className='box-d'>
-                    <div className='box-d-top'>
-                        <div className='time'>
-                            2022-04-11
-                        </div>
-                        <span className='img'>
-                            <img src='https://public.nftstatic.com/static/nft/res/1a213b59260446cda3414e32b7a60d82.png'></img>
-                        </span>
-                    </div>
-                    <div className='box-d-bottom'>
-                        <div className='title'>Egg-citing Easter Extravaganza</div>
-                        <div className='desc'>
-                            <span>头</span>
-                            <span>BinanceNFT</span>
-                            <span>发行数量</span>
-                            <span>63,000</span>
-                        </div>
-                    </div>
-                </div>
-                <div className='box-d'>
-                    <div className='box-d-top'>
-                        <div className='time'>
-                            2022-04-11
-                        </div>
-                        <span className='img'>
-                            <img src='https://public.nftstatic.com/static/nft/res/1a213b59260446cda3414e32b7a60d82.png'></img>
-                        </span>
-                    </div>
-                    <div className='box-d-bottom'>
-                        <div className='title'>Egg-citing Easter Extravaganza</div>
-                        <div className='desc'>
-                            <span>头</span>
-                            <span>BinanceNFT</span>
-                            <span>发行数量</span>
-                            <span>63,000</span>
-                        </div>
-                    </div>
-                </div>
+                {renderBindList()}
             </div>
         </main>
     </div>
