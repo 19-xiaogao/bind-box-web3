@@ -69,7 +69,7 @@
         }
 
         .box-price-message {
-            margin-top: 20px;
+            margin-top: 60px;
             display: flex;
             justify-content: space-between;
 
@@ -255,7 +255,7 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-
+                margin-left: 10px;
                 div:nth-child(1) {
                     font-weight: 500;
                     font-size: 14px;
