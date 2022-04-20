@@ -12,6 +12,7 @@
     "@ant-design/icons": "^4.7.0",
     "antd": "^4.19.5",
     "bs58": "^5.0.0",
+    "dayjs": "^1.11.1",
     "ethereum-cryptography": "^1.0.3",
     "ethers": "^5.6.4",
     "js-base64": "^3.7.2",
