@@ -14,7 +14,7 @@ function BannerJsx() {
         textAlign: 'center',
         background: '#364d79',
     };
-    return <Carousel afterChange={onChange} autoplay>
+    return <Carousel autoplay>
         <div>
             <h3 style={contentStyle}>1</h3>
         </div>
