@@ -1,0 +1,141 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "admin_",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "permissionRequired",
+				"type": "string"
+			}
+		],
+		"name": "create_application",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "appCode",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "tableName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "fields",
+				"type": "string"
+			}
+		],
+		"name": "create_table",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "appCode",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "tableName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "fields",
+				"type": "string"
+			}
+		],
+		"name": "insert_row",
+		"outputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "encode",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "accessToken",
+				"type": "string"
+			}
+		],
+		"name": "query_own_application",
+		"outputs": [
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "accessToken",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "appCode",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "querierObj",
+				"type": "string"
+			}
+		],
+		"name": "query_std_querier",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
