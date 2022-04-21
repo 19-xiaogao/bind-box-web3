@@ -1,6 +1,8 @@
 import bs58 from "bs58";
 import * as secp from "ethereum-cryptography/secp256k1";
+import * as ethers from "ethers";
 import { keccak256 } from "ethereum-cryptography/keccak";
+import DBchainConfig from "./config";
 
 const privKey = new Uint8Array([
     29, 29, 223, 145, 133, 200, 122, 27, 31, 168, 151, 62, 91, 63, 97, 43, 172, 68, 101, 195, 127, 118, 184,
@@ -33,4 +35,13 @@ export function createAccessToken() {
     var time = "" + Date.now();
     var result = signForToken(time);
     return result;
+}
+
+export function getProvider() {
+    if (window.ethIsConnected) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        return signer;
+    }
+    return new ethers.providers.JsonRpcProvider(DBchainConfig.netWork);
 }
