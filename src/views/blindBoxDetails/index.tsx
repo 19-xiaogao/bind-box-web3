@@ -1,8 +1,10 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { useSearchParams } from "react-router-dom"
 import HeaderJsx from '../../components/views/Header'
-import { queryBindBoxDetailApi } from "@/api/api"
-import { formatTime } from "@/utils"
+import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/api"
+import { formatTime, notificationInfo, notificationSuccess } from "@/utils"
+import { InputNumber } from 'antd';
+import { IMetamaskErrResponse } from "@/types/metamask"
 import "./bindBoxDetails.scss"
 
 const initValue = {
@@ -33,17 +35,38 @@ const reducer = (state = initValue, action: any) => {
 
 function BindBoxDetailJsx() {
     const [searchParams] = useSearchParams()
-    const [bindDetailBox, dispatchBindDetailBox] = useReducer(reducer, initValue);
+    const [bindDetailBox, dispatchBindDetailBox] = useReducer(reducer, initValue)
+    const [numberRemainCounts, setNumberRemainCounts] = useState(0)
+    const [buyCount, setBuyCount] = useState(1)
+    const id = searchParams.get('id') as string
 
     const queryBindBoxDetail = async () => {
-        const id = searchParams.get('id') as string
         const result = await queryBindBoxDetailApi(id)
-        console.log(result);
-
         dispatchBindDetailBox({ type: "change", payload: result[0] })
 
+        const bindBoxCountsResult = await curSoldTicketsApi(result[0].contract_address)
+        const numberRemaining = Number(result[0].release_number) - parseInt(bindBoxCountsResult._hex)
 
+        setNumberRemainCounts(numberRemaining)
     }
+
+    const handleBuyBindBoxClick = async () => {
+        if (!window.ethIsConnected) {
+            return notificationInfo("请先授权该网站。")
+        }
+        try {
+            const result = await buyTicketsApi(buyCount, bindDetailBox.price * buyCount, bindDetailBox.contract_address)
+            notificationSuccess("购买成功,区块上链中...")
+        } catch (error: IMetamaskErrResponse | any) {
+            if (error.code === 4001) {
+                notificationInfo("您拒绝了购买。")
+            }
+        }
+    }
+    const handleInputNumberChange = (value: number) => {
+        setBuyCount(value)
+    }
+
     useEffect(() => {
         queryBindBoxDetail()
     }, [])
@@ -98,7 +121,7 @@ function BindBoxDetailJsx() {
                         <div className='box-price'>
                             <div>当前出价</div>
                             <div>{bindDetailBox.price}DBC</div>
-                            {/* <div>≈ $ 179.98 </div> */}
+                            <div>剩余数量 {numberRemainCounts} 个</div>
                         </div>
                         <div className='box-end-time'>
                             <div className='time-title'>拍卖开启时间</div>
@@ -122,7 +145,10 @@ function BindBoxDetailJsx() {
                             </div>
                         </div>
                     </div>
-                    <div className='open-bind-box'>抢购</div>
+                    <div className='open-bind-box'>
+                        <InputNumber min={1} max={numberRemainCounts} defaultValue={1} className="input" onChange={handleInputNumberChange} />
+                        <button onClick={handleBuyBindBoxClick} className="btn">购买</button>
+                    </div>
                 </div>
             </div>
             <div className='bind-box-decs'>
