@@ -21,12 +21,16 @@ const HomeJsx = () => {
     const handleAllBindBoxClick = () => {
         navigate('/allBindBox')
     }
+    const handleBindBoxClick = (id: string) => {
+        navigate('/bindBoxDetails?id=' + id)
+    }
+
     useEffect(() => {
         getBindBox()
     }, [])
 
     const renderBindList = () => {
-        return bindBoxList.map((item: any) => (<div className='b-box' key={item.id}>
+        return bindBoxList.map((item: any) => (<div className='b-box' key={item.id} onClick={() => handleBindBoxClick(item.id)}>
             <div className='img'>
                 <img src={item.desc.nft_metadatas[0].image} alt="" />
             </div>
