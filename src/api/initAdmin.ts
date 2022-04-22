@@ -38,7 +38,7 @@ export function createAccessToken() {
 }
 
 export function getProvider() {
-    if (window.ethIsConnected) {
+    if (window.ethereum.selectedAddress) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         return signer;
