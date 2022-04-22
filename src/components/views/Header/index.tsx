@@ -17,11 +17,9 @@ const HeaderJsx = () => {
             const result = await window.ethereum.request({ method: 'eth_requestAccounts' });
             setCurrentAccount(result)
             notificationSuccess("您同意了网站授权。")
-            window.ethIsConnected = true;
         } catch (error: IMetamaskErrResponse | any) {
             if (error.code === 4001) {
                 notificationInfo("您拒绝了网站授权。")
-                window.ethIsConnected = false;
             }
         }
     }
@@ -29,7 +27,6 @@ const HeaderJsx = () => {
     const checkIfWalletIsConnected = async () => {
         try {
             const { ethereum } = window;
-
             if (!ethereum) {
                 return;
             }
@@ -37,10 +34,8 @@ const HeaderJsx = () => {
             if (accounts.length !== 0) {
                 const account = accounts[0];
                 setCurrentAccount(account)
-                window.ethIsConnected = true;
             }
         } catch (error) {
-            window.ethIsConnected = false;
             console.log(error);
         }
     }
