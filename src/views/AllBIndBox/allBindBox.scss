@@ -10,7 +10,7 @@
         border-radius: 10px;
 
         input {
-            color: #1E2329;
+            color: #1e2329;
             font-size: 14px;
             font-weight: 600;
             padding-left: 10px;
@@ -18,11 +18,11 @@
 
         &:focus {
             box-shadow: none;
-            border-color: #E7BB41;
+            border-color: #e7bb41;
         }
 
         &:hover {
-            border-color: #E7BB41;
+            border-color: #e7bb41;
         }
     }
 }
@@ -42,7 +42,8 @@
         height: 217px;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: rgb(24 26 32 / 10%) 0px 0px 1px, rgb(71 77 87 / 4%) 0px 3px 6px, rgb(24 26 32 / 4%) 0px 1px 2px;
+        box-shadow: rgb(24 26 32 / 10%) 0px 0px 1px, rgb(71 77 87 / 4%) 0px 3px 6px,
+            rgb(24 26 32 / 4%) 0px 1px 2px;
         transition: all 0.9s;
 
         .box-d-top {
@@ -73,7 +74,7 @@
                 height: 123px;
                 display: flex;
                 filter: blur(0);
-                transition: filter .3s;
+                transition: filter 0.3s;
 
                 img {
                     height: 100%;
@@ -145,7 +146,6 @@
 
         &:hover {
             transform: translateY(-8px);
-
         }
     }
 }

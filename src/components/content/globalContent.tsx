@@ -1,11 +1,9 @@
-import React, { createContext, useContext } from "react"
-
+import React, { createContext, useContext } from "react";
 
 export const GlobalContext = createContext({
-    
     isExitMetamask: false,
     isConnected: false,
-    connectToEthNetWork: () => null
-})
+    connectToEthNetWork: () => null,
+});
 
-export const useGlobalState = () => useContext(GlobalContext)
+export const useGlobalState = () => useContext(GlobalContext);
