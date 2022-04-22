@@ -38,6 +38,12 @@ function BindBoxDetailJsx() {
     const [bindDetailBox, dispatchBindDetailBox] = useReducer(reducer, initValue)
     const [numberRemainCounts, setNumberRemainCounts] = useState(0)
     const [buyCount, setBuyCount] = useState(1)
+
+    const [d, setDay] = useState<any>(0);
+    const [h, setHours] = useState<any>(0);
+    const [m, setMinutes] = useState<any>(0);
+    const [s, setSeconds] = useState<any>(0);
+
     const id = searchParams.get('id') as string
 
     const queryBindBoxDetail = async () => {
@@ -48,12 +54,14 @@ function BindBoxDetailJsx() {
         const numberRemaining = Number(result[0].release_number) - parseInt(bindBoxCountsResult._hex)
 
         setNumberRemainCounts(numberRemaining)
+        return result[0]
     }
 
     const handleBuyBindBoxClick = async () => {
-        if (!window.ethIsConnected) {
+        if (!window.ethereum.selectedAddress) {
             return notificationInfo("请先授权该网站。")
         }
+        // if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
         try {
             const result = await buyTicketsApi(buyCount, bindDetailBox.price * buyCount, bindDetailBox.contract_address)
             notificationSuccess("购买成功,区块上链中...")
@@ -68,9 +76,33 @@ function BindBoxDetailJsx() {
     }
 
     useEffect(() => {
-        queryBindBoxDetail()
+        let time: any
+        queryBindBoxDetail().then((result) => {
+            time = setInterval(() => {
+                intervalTime(result.release_time)
+            }, 1000)
+        })
+        return () => {
+            clearInterval(time)
+        }
     }, [])
 
+
+    const isShowTime = (time: string) => {
+        return Date.now() / 1000 - Number(time) < 0
+    }
+
+    const intervalTime = (release_time: string) => {
+        const differenceBetweenTime = Number(release_time) - Date.now() / 1000
+        const day = Math.floor(differenceBetweenTime / 86400);
+        const hours = Math.floor((differenceBetweenTime % 86400) / 3600)
+        const minutes = Math.floor(((differenceBetweenTime % 86400) % 3600) / 60)
+        const seconds = Math.floor(((differenceBetweenTime % 86400) % 3600) % 60);
+        setDay(day)
+        setHours(hours)
+        setMinutes(minutes)
+        setSeconds(seconds)
+    }
 
     const renderNftList = () => {
         return bindDetailBox.desc.nft_metadatas.slice(1).map((item: any, key: number) => (<div className='box' key={key}>
@@ -80,10 +112,35 @@ function BindBoxDetailJsx() {
             <div className='nft-decs'>
                 <div>{item.name}</div>
                 <div>{item.attributes[0].level}</div>
-                {/* <div>发行数量 : {item.name} </div> */}
+                <div>发行数量 : 30 </div>
                 <div>概率 : {item.attributes[0].probability}</div>
             </div>
         </div>))
+    }
+
+    const renderEndTimeJsx = () => {
+        if (!isShowTime(bindDetailBox.release_time)) return null
+        return <div className='box-end-time'>
+            <div className='time-title'>拍卖开启时间</div>
+            <div className='time-show'>
+                <div className='day'>
+                    <span>{d}</span>
+                    <span>天</span>
+                </div>
+                <div className='day'>
+                    <span>{h}</span>
+                    <span>小时</span>
+                </div>
+                <div className='day'>
+                    <span>{m}</span>
+                    <span>分</span>
+                </div>
+                <div className='day'>
+                    <span>{s}</span>
+                    <span>秒</span>
+                </div>
+            </div>
+        </div>
     }
 
     return <div className='root-page'>
@@ -97,53 +154,13 @@ function BindBoxDetailJsx() {
                     <p className='box-name'>
                         {bindDetailBox.desc.name}
                     </p>
-                    {/* <div className='box-source'>
-                        <div className='publisher'>
-                            <div className='p-owner'>
-                                <img src="https://public.nftstatic.com/static/nft/zipped/cf66bd860fb147199032c4711a75d3c7_zipped.jpeg" />
-                            </div>
-                            <div className='names'>
-                                <div>发布者</div>
-                                <div>GalaxyBlitz</div>
-                            </div>
-                        </div>
-                        <div className='publisher'>
-                            <div className='p-owner'>
-                                <img src="https://public.nftstatic.com/static/nft/zipped/cf66bd860fb147199032c4711a75d3c7_zipped.jpeg" />
-                            </div>
-                            <div className='names'>
-                                <div>发布者</div>
-                                <div>GalaxyBlitz</div>
-                            </div>
-                        </div>
-                    </div> */}
                     <div className='box-price-message'>
                         <div className='box-price'>
                             <div>当前出价</div>
                             <div>{bindDetailBox.price}DBC</div>
                             <div>剩余数量 {numberRemainCounts} 个</div>
                         </div>
-                        <div className='box-end-time'>
-                            <div className='time-title'>拍卖开启时间</div>
-                            <div className='time-show'>
-                                <div className='day'>
-                                    <span>00</span>
-                                    <span>天</span>
-                                </div>
-                                <div className='day'>
-                                    <span>00</span>
-                                    <span>小时</span>
-                                </div>
-                                <div className='day'>
-                                    <span>00</span>
-                                    <span>分</span>
-                                </div>
-                                <div className='day'>
-                                    <span>00</span>
-                                    <span>秒</span>
-                                </div>
-                            </div>
-                        </div>
+                        {renderEndTimeJsx()}
                     </div>
                     <div className='open-bind-box'>
                         <InputNumber min={1} max={numberRemainCounts} defaultValue={1} className="input" onChange={handleInputNumberChange} />
