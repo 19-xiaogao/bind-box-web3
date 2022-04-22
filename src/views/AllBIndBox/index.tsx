@@ -4,11 +4,12 @@ import { SearchOutlined } from "@ant-design/icons"
 import HeaderJsx from '../../components/views/Header'
 import "./allBindBox.scss"
 import { formatTime } from "@/utils"
-import { queryBindBoxApi } from "@/api/api"
+import { queryBindBoxApi, queryContractApi } from "@/api/api"
 import { useNavigate } from "react-router-dom";
 
 function AllBindBoxJsx() {
     const [bindBoxList, setBindBoxList] = useState([])
+    const [searchValue, setSearchValue] = useState("")
     const navigate = useNavigate();
 
     const getBindBox = async (offset: number, limit: number) => {
@@ -20,6 +21,28 @@ function AllBindBoxJsx() {
         }
     }
 
+    const handleInputChange = (e: any) => {
+        setSearchValue(e.target.value)
+    }
+    const handleKeyDown = async (e: any) => {
+        const keyNum = window.event ? e.keyCode : e.which;
+        if (searchValue.trim() === '') return
+        if (keyNum === 13) {
+            const result = await queryContractApi(searchValue)
+            setBindBoxList(result)
+        }
+
+    }
+    const isShowTime = (time: string) => {
+        return Date.now() / 1000 - Number(time) < 0
+    }
+
+    const renderShowTime = (time: string) => {
+        return isShowTime(time) ? <div className='time' >
+            {formatTime(time)}
+        </div> : null
+    }
+
     const handleBindBoxDetailClick = (item: any) => {
         navigate('/bindBoxDetails?id=' + item.id)
     }
@@ -27,9 +50,7 @@ function AllBindBoxJsx() {
     const renderBindList = () => {
         return bindBoxList.map((item: any) => (<div className='box-d' key={item.id} onClick={() => handleBindBoxDetailClick(item)}>
             <div className='box-d-top'>
-                <div className='time'>
-                    {formatTime(item.release_time)}
-                </div>
+                {renderShowTime(item.release_time)}
                 <span className='img'>
                     <img src={item.desc.nft_metadatas[0].image}></img>
                 </span>
@@ -54,7 +75,7 @@ function AllBindBoxJsx() {
         <main>
             <div className='r-header'>
                 <h2>全部盲盒系列</h2>
-                <Input className='search' placeholder='请输入盲盒的名称或者合约地址' prefix={<SearchOutlined />} />
+                <Input className='search' value={searchValue} onChange={handleInputChange} onKeyDown={handleKeyDown} placeholder='请输入盲盒的名称或者合约地址' prefix={<SearchOutlined />} />
             </div>
             <div className='box-list'>
                 {renderBindList()}
