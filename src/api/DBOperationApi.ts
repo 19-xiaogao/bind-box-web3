@@ -3,7 +3,7 @@ import DBOperation from "./abi/DBOperation.json";
 import { createAccessToken, getProvider } from "@/api/initAdmin";
 import * as base64 from "js-base64";
 import DBchainConfig from "./config";
-import { initDRC721Contract } from "./DRC721Api";
+import { initDRC721Contract, getLatestTokenIdApi, ownerOfAPi, tokenURIAPi } from "./DRC721Api";
 
 const DBOperationContractAddress = "0x53F0b5B7D8E7B86fc79030e1F9048c2c5648F936";
 
@@ -71,10 +71,11 @@ export const queryContractApi = async (contract: string) => {
     return await queryDbChainData(queryParams);
 };
 
-async function balanceOfTickets(contract_address: string, accountAddress: string) {
+//查询门票数量(查询盲盒数量)
+export async function balanceOfTickets(contract_address: string, accountAddress: string) {
     const DRC721Contract = initDRC721Contract(contract_address);
     const [count, data] = await DRC721Contract.balanceOfTickets(accountAddress);
-    if (!parseInt(count)) return;
+    if (!parseInt(count)) return null;
     const decodeResult = JSON.parse(base64.decode(data));
     return {
         contract_address,
@@ -90,6 +91,12 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
             table: "contracts",
         },
         { method: "select", fields: "id,contract_address" },
+        {
+            method: "where",
+            field: "status",
+            value: "ACTIVE",
+            operator: "=",
+        },
     ];
     const parseResult = await queryDbChainData(queryParams, true);
 
@@ -110,3 +117,39 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
     }
     return bindBoxList;
 };
+
+export const queryAccountAllNftApi = async () => {
+    const queryParams = [
+        {
+            method: "table",
+            table: "contracts",
+        },
+        { method: "select", fields: "id,contract_address" },
+        {
+            method: "where",
+            field: "status",
+            value: "ACTIVE",
+            operator: "=",
+        },
+    ];
+    const accountAllNftData = [];
+    try {
+        const parseResult = await queryDbChainData(queryParams, true);
+        for await (let item of parseResult) {
+            const result = await getLatestTokenIdApi(item.contract_address);
+            const count = parseInt(result._hex);
+            for (let i = 1; i <= count; i++) {
+                const ownerResult = await ownerOfAPi(item.contract_address, i);
+                if (ownerResult.toLowerCase() == window.ethereum.selectedAddress.toLowerCase()) {
+                    const tokenUrlResult = await tokenURIAPi(item.contract_address, i);
+                    const decodeData = JSON.parse(base64.decode(tokenUrlResult));
+                    accountAllNftData.push(decodeData);
+                }
+            }
+        }
+        return accountAllNftData;
+    } catch (error) {
+        return accountAllNftData;
+    }
+};
+queryAccountAllNftApi();

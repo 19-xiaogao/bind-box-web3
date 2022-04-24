@@ -1,7 +1,7 @@
 import * as ethers from "ethers";
 import DRC751 from "./abi/DRC721.json";
-import { createAccessToken, getProvider } from "@/api/initAdmin";
-import base58 from "bs58";
+import { getProvider } from "@/api/initAdmin";
+// import base58 from "bs58";
 
 import * as base64 from "js-base64";
 
@@ -32,6 +32,7 @@ export const openBindBoxApi = async (contractAddress: string) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
 
     const result = await DRC721Contract.safeMint();
+
     return new Promise((resolve, reject) => {
         try {
             DRC721Contract.on("Transfer", async (...args) => {
@@ -44,4 +45,19 @@ export const openBindBoxApi = async (contractAddress: string) => {
             reject(error);
         }
     });
+};
+
+export const getLatestTokenIdApi = (contractAddress: string) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+    return DRC721Contract.getLatestTokenId();
+};
+
+export const ownerOfAPi = (contractAddress: string, tokenId: number) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+    return DRC721Contract.ownerOf(tokenId);
+};
+
+export const tokenURIAPi = (contractAddress: string, tokenId: number) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+    return DRC721Contract.tokenURI(tokenId);
 };
