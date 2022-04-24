@@ -2,37 +2,65 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./personAsset.scss";
 import HeaderJsx from "../../components/views/Header";
-import { queryAllPrivateBindBox, getProvider } from "@/api/api";
-import * as ethers from "ethers";
+import { Empty } from "antd"
+import { queryAllPrivateBindBox, queryAccountAllNftApi } from "@/api/api";
+enum Status {
+    bindBox,
+    nft
+}
 function PersonAssetJsx() {
     const [myBindBoxList, setMyBindBoxList] = useState([]);
-
+    const [sidebarValue, setSidebar] = useState(Status.bindBox)
+    const [accountAllNft, setAccountAllNft] = useState([])
     const navigate = useNavigate();
     useEffect(() => {
-        queryMyBindBox(window.ethereum.selectedAddress);
-
-        // provider.on(filter, (result) => {
-        //     console.log(result);
-        // });
+        initData(sidebarValue)
     }, []);
 
+    const handleClickSwitchClick = (status: Status) => {
+        setSidebar(status)
+    }
     const queryMyBindBox = async (accountAddress: string) => {
         try {
             const result = await queryAllPrivateBindBox(accountAddress);
-            console.log(result);
             setMyBindBoxList(result);
         } catch (error) {
             setMyBindBoxList([]);
         }
     };
 
-    const handleBindBoxClick = (id: string, count: string) => {
-        navigate(`/openBindBox?id=${id}&count=${count}`);
+    const queryAccountAllNft = async () => {
+        try {
+            const accountAllResult: any = await queryAccountAllNftApi()
+            setAccountAllNft(accountAllResult)
+        } catch (error) {
+            setAccountAllNft([])
+        }
+    }
+
+    const initData = (status: Status) => {
+        if (status === Status.bindBox) {
+            return queryMyBindBox(window.ethereum.selectedAddress);
+        } else {
+            return queryAccountAllNft()
+        }
+    }
+    const renderContent = () => {
+        if (sidebarValue === Status.bindBox) {
+            return <div className="t-content">{renderBoxList()}</div>
+        } else {
+            return null
+        }
+    }
+
+    const handleBindBoxClick = (id: string) => {
+        navigate(`/openBindBox?id=${id}`);
     };
 
     const renderBoxList = () => {
+
         return myBindBoxList.map((item: any, index) => (
-            <div className="b-box" key={index} onClick={() => handleBindBoxClick(item.id, item.count)}>
+            <div className="b-box" key={index} onClick={() => handleBindBoxClick(item.id)}>
                 <div className="img">
                     <img src={item.image} alt="" />
                 </div>
@@ -59,10 +87,11 @@ function PersonAssetJsx() {
             </div>
             <main className="table">
                 <div className="sidebar">
-                    <div>我的盲盒</div>
-                    <div>nft</div>
+                    <div onClick={() => handleClickSwitchClick(Status.bindBox)}>我的盲盒</div>
+                    <div onClick={() => handleClickSwitchClick(Status.nft)}>nft</div>
                 </div>
-                <div className="t-content">{renderBoxList()}</div>
+                {myBindBoxList.length === 0 ? <Empty description={false} className="not-data" /> : renderContent()}
+                {/* {renderContent()} */}
             </main>
         </div>
     );

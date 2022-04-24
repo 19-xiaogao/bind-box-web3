@@ -1,9 +1,9 @@
 import React, { useEffect, useReducer, useState } from "react";
+import { InputNumber } from "antd";
 import { useSearchParams } from "react-router-dom";
-import HeaderJsx from "../../components/views/Header";
+import HeaderJsx from "@/components/views/Header";
 import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/api";
 import { formatTime, notificationInfo, notificationSuccess } from "@/utils";
-import { InputNumber } from "antd";
 import { IMetamaskErrResponse } from "@/types/metamask";
 import "./bindBoxDetails.scss";
 
@@ -177,9 +177,13 @@ function BindBoxDetailJsx() {
                                 className="input"
                                 onChange={handleInputNumberChange}
                             />
-                            <button onClick={handleBuyBindBoxClick} className="btn">
-                                购买
-                            </button>
+                            {
+                                numberRemainCounts ? <button onClick={handleBuyBindBoxClick} className="btn">
+                                    购买
+                                </button>
+                                    : <button className="soldOut">售尽</button>
+                            }
+
                         </div>
                     </div>
                 </div>
