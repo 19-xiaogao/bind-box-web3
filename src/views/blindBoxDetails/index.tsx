@@ -6,6 +6,7 @@ import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/a
 import { formatTime, notificationInfo, notificationSuccess } from "@/utils";
 import { IMetamaskErrResponse } from "@/types/metamask";
 import "./bindBoxDetails.scss";
+import FooterJSX from "@/components/views/footer";
 
 const initValue = {
     contract_address: "",
@@ -214,6 +215,8 @@ function BindBoxDetailJsx() {
                     <div className="rarity-box">{renderNftList()}</div>
                 </div>
             </main>
+            <FooterJSX />
+
         </div>
     );
 }

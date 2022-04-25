@@ -7,6 +7,7 @@ import { Spin } from "antd";
 import RewardJSX from "./rewardJsx"
 
 import "./openBindBox.scss";
+import FooterJSX from "@/components/views/footer";
 
 const initValue = {
     contract_address: "",
@@ -159,6 +160,7 @@ function BindBoxDetailJsx() {
                     </div>
                 </main>
             </Spin>
+            <FooterJSX />
 
         </div>
     );

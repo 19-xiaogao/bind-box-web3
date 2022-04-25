@@ -4,6 +4,7 @@ import "./personAsset.scss";
 import HeaderJsx from "../../components/views/Header";
 import { Empty } from "antd"
 import { queryAllPrivateBindBox, queryAccountAllNftApi } from "@/api/api";
+import FooterJSX from "@/components/views/footer";
 enum Status {
     bindBox,
     nft
@@ -99,6 +100,8 @@ function PersonAssetJsx() {
                     {sidebarValue === Status.bindBox ? renderBoxList() : renderAccountsNftList()}
                 </div>
             </main>
+            <FooterJSX />
+
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FooterJSX from "@/components/views/footer";
 import HeaderJsx from "@/components/views/Header";
 import BannerJsx from "@/components/views/banner";
 import { queryBindBoxApi } from "@/api/api";
@@ -86,6 +87,7 @@ const HomeJsx = () => {
                 </div>
             </div> */}
             </main>
+            <FooterJSX />
         </div>
     );
 };
