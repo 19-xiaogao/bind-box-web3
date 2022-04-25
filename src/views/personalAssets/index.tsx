@@ -14,11 +14,16 @@ function PersonAssetJsx() {
     const [accountAllNft, setAccountAllNft] = useState([])
     const navigate = useNavigate();
     useEffect(() => {
-        initData(sidebarValue)
+        queryMyBindBox(window.ethereum.selectedAddress)
     }, []);
 
     const handleClickSwitchClick = (status: Status) => {
         setSidebar(status)
+        if (status === Status.bindBox) {
+            return queryMyBindBox(window.ethereum.selectedAddress);
+        } else {
+            return queryAccountAllNft()
+        }
     }
     const queryMyBindBox = async (accountAddress: string) => {
         try {
@@ -38,27 +43,11 @@ function PersonAssetJsx() {
         }
     }
 
-    const initData = (status: Status) => {
-        if (status === Status.bindBox) {
-            return queryMyBindBox(window.ethereum.selectedAddress);
-        } else {
-            return queryAccountAllNft()
-        }
-    }
-    const renderContent = () => {
-        if (sidebarValue === Status.bindBox) {
-            return <div className="t-content">{renderBoxList()}</div>
-        } else {
-            return null
-        }
-    }
-
     const handleBindBoxClick = (id: string) => {
         navigate(`/openBindBox?id=${id}`);
     };
 
     const renderBoxList = () => {
-
         return myBindBoxList.map((item: any, index) => (
             <div className="b-box" key={index} onClick={() => handleBindBoxClick(item.id)}>
                 <div className="img">
@@ -71,6 +60,21 @@ function PersonAssetJsx() {
             </div>
         ));
     };
+
+    const renderAccountsNftList = () => {
+        return accountAllNft.map((item: any, index) => (
+            <div className="b-box" key={index} >
+                <div className="img">
+                    <img src={item.image} alt="" />
+                </div>
+                <div className="count" style={{ color: "#f5c253" }}>{item.attributes[0].level}</div>
+                <div className="title">
+                    <span >{item.name}</span>
+                </div>
+            </div>
+        ));
+    }
+
     return (
         <div className="root-page">
             <HeaderJsx />
@@ -87,11 +91,13 @@ function PersonAssetJsx() {
             </div>
             <main className="table">
                 <div className="sidebar">
-                    <div onClick={() => handleClickSwitchClick(Status.bindBox)}>我的盲盒</div>
-                    <div onClick={() => handleClickSwitchClick(Status.nft)}>nft</div>
+                    <div onClick={() => handleClickSwitchClick(Status.bindBox)} className={sidebarValue === Status.bindBox ? "cover" : ''}>我的盲盒</div>
+                    <div onClick={() => handleClickSwitchClick(Status.nft)} className={sidebarValue === Status.nft ? "cover" : ''}>nft</div>
                 </div>
-                {myBindBoxList.length === 0 ? <Empty description={false} className="not-data" /> : renderContent()}
-                {/* {renderContent()} */}
+                {/* {myBindBoxList.length === 0 ? <Empty description={false} className="not-data" /> : renderContent()} */}
+                <div className="t-content">
+                    {sidebarValue === Status.bindBox ? renderBoxList() : renderAccountsNftList()}
+                </div>
             </main>
         </div>
     );
