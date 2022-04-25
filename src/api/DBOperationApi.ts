@@ -39,6 +39,20 @@ export const queryBindBoxApi = async (offset: number, limit: number) => {
     return await queryDbChainData(queryParams);
 };
 
+export const queryBannerApi = async () => {
+    const queryParams: any = [
+        { method: "table", table: "contracts" },
+        {
+            method: "where",
+            field: "banner_status",
+            value: "1",
+            operator: "=",
+        },
+        ,
+    ];
+    return await queryDbChainData(queryParams);
+};
+
 export const queryBindBoxCountApi = async () => {
     const queryParams: any = [{ method: "table", table: "contracts" }, { method: "count" }];
     return await queryDbChainData(queryParams);
@@ -84,6 +98,7 @@ export async function balanceOfTickets(contract_address: string, accountAddress:
     };
 }
 
+// 查询自己的nft
 export const queryAllPrivateBindBox = async (accountAddress: string) => {
     const queryParams = [
         {
@@ -118,6 +133,7 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
     return bindBoxList;
 };
 
+//获取用户的所有nft
 export const queryAccountAllNftApi = async () => {
     const queryParams = [
         {
@@ -152,4 +168,3 @@ export const queryAccountAllNftApi = async () => {
         return accountAllNftData;
     }
 };
-queryAccountAllNftApi();
