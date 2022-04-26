@@ -159,12 +159,25 @@ export const queryAccountAllNftApi = async () => {
                 if (ownerResult.toLowerCase() == window.ethereum.selectedAddress.toLowerCase()) {
                     const tokenUrlResult = await tokenURIAPi(item.contract_address, i);
                     const decodeData = JSON.parse(base64.decode(tokenUrlResult));
-                    accountAllNftData.push(decodeData);
+                    accountAllNftData.push({
+                        ...decodeData,
+                        tokenId: i,
+                        contractAddress: item.contract_address,
+                    });
                 }
             }
         }
         return accountAllNftData;
     } catch (error) {
         return accountAllNftData;
+    }
+};
+
+export const queryNftApi = async (id: number) => {
+    try {
+        const allNftApi = await queryAccountAllNftApi();
+        return allNftApi.find((item) => item.tokenId === id);
+    } catch (error) {
+        return {};
     }
 };

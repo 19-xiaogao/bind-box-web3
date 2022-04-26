@@ -6,8 +6,6 @@ import "./assets/css/index.scss";
 import "@/api/initAdmin";
 
 ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
+    <App />,
     document.getElementById("root")
 );

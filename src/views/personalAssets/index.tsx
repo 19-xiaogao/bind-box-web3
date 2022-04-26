@@ -5,6 +5,7 @@ import HeaderJsx from "../../components/views/Header";
 import { Empty } from "antd"
 import { queryAllPrivateBindBox, queryAccountAllNftApi } from "@/api/api";
 import FooterJSX from "@/components/views/footer";
+import { base64 } from "ethers/lib/utils";
 enum Status {
     bindBox,
     nft
@@ -38,6 +39,7 @@ function PersonAssetJsx() {
     const queryAccountAllNft = async () => {
         try {
             const accountAllResult: any = await queryAccountAllNftApi()
+            console.log(accountAllResult);
             setAccountAllNft(accountAllResult)
         } catch (error) {
             setAccountAllNft([])
@@ -61,10 +63,14 @@ function PersonAssetJsx() {
             </div>
         ));
     };
+    const handleNftClick = (id: number) => {
+        navigate(`/nftDetailJsx?id=${id}`);
+
+    }
 
     const renderAccountsNftList = () => {
         return accountAllNft.map((item: any, index) => (
-            <div className="b-box" key={index} >
+            <div className="b-box" key={index} onClick={() => handleNftClick(item.tokenId)}>
                 <div className="img">
                     <img src={item.image} alt="" />
                 </div>

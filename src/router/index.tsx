@@ -5,6 +5,7 @@ import AllBindBox from "../views/allBIndBox";
 import BindBoxDetailJsx from "../views/blindBoxDetails";
 import PersonAssetJsx from "../views/personalAssets";
 import OpenBindBoxJsx from "../views/openBIndBox";
+import NftDetailJsx from "@/views/nftDetails";
 const RouterJsx = () => {
     useEffect(() => {
         // 监听账户发生变化
@@ -23,6 +24,7 @@ const RouterJsx = () => {
                 <Route path="/bindBoxDetails" element={<BindBoxDetailJsx />} />
                 <Route path="/assets" element={<PersonAssetJsx />} />
                 <Route path="/openBindBox" element={<OpenBindBoxJsx />} />
+                <Route path="/nftDetailJsx" element={<NftDetailJsx />} />
             </Routes>
         </BrowserRouter>
     );

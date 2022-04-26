@@ -4,6 +4,7 @@ import { getProvider } from "@/api/initAdmin";
 // import base58 from "bs58";
 
 import * as base64 from "js-base64";
+import { IMetamaskErrResponse } from "@/types/metamask";
 
 // DRC751 abi
 const DRC751contractABI = DRC751;
@@ -60,4 +61,26 @@ export const ownerOfAPi = (contractAddress: string, tokenId: number) => {
 export const tokenURIAPi = (contractAddress: string, tokenId: number) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
     return DRC721Contract.tokenURI(tokenId);
+};
+
+export const transferFromNftApi = async (
+    contractAddress: string,
+    from: string,
+    to: string,
+    tokenId: number
+) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+    const result = await DRC721Contract.transferFrom(from, to, tokenId);
+    try {
+        return new Promise((resolve, reject) => {
+            DRC721Contract.on("Transfer", async (...args) => {
+                console.log(args[3].transactionHash);
+                if (args[3].transactionHash === result.hash) {
+                    resolve({ status: true });
+                }
+            });
+        });
+    } catch (error: IMetamaskErrResponse | any) {
+        return { ...error, status: false };
+    }
 };

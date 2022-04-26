@@ -4,6 +4,7 @@ import * as ethers from "ethers";
 import { keccak256 } from "ethereum-cryptography/keccak";
 import DBchainConfig from "./config";
 
+// 对应助记词 fence weapon anchor pony mountain float later castle loop tragic embark outdoor
 const privKey = new Uint8Array([
     29, 29, 223, 145, 133, 200, 122, 27, 31, 168, 151, 62, 91, 63, 97, 43, 172, 68, 101, 195, 127, 118, 184,
     118, 109, 189, 12, 190, 129, 23, 54, 175,
