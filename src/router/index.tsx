@@ -10,10 +10,7 @@ const RouterJsx = () => {
     useEffect(() => {
         // 监听账户发生变化
         window.ethereum.on("accountsChanged", (accounts: string[]) => {
-            if (window.location.pathname == "/assets") {
-                return (window.location.href = "/");
-            }
-            window.location.reload();
+            window.location.href = "/";
         });
     }, []);
     return (

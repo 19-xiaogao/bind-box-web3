@@ -71,8 +71,6 @@ function BindBoxDetailJsx() {
             setSpinning(true)
             const result: any = await openBindBoxApi(bindDetailBox.contract_address)
             setSpinning(false)
-            console.log(result.attributes[0].level);
-
             setRewardObject({ name: result.name, lever: result.attributes[0].level, image: result.image, visible: true })
             queryTicketsCount(bindDetailBox.contract_address, window.ethereum.selectedAddress)
         } catch (error) {
