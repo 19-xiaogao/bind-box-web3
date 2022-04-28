@@ -5,7 +5,7 @@ import * as base64 from "js-base64";
 import DBchainConfig from "./config";
 import { initDRC721Contract, getLatestTokenIdApi, ownerOfAPi, tokenURIAPi } from "./DRC721Api";
 
-const DBOperationContractAddress = "0x53F0b5B7D8E7B86fc79030e1F9048c2c5648F936";
+const DBOperationContractAddress = "0x536D3b6B9899Df65b4d32072f1Cf34971Ec80229";
 
 export function initDBOperationContract() {
     const provider = getProvider();
@@ -109,7 +109,7 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
         {
             method: "where",
             field: "status",
-            value: "ACTIVE",
+            value: "1",
             operator: "=",
         },
     ];
@@ -121,11 +121,11 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
             const result = await balanceOfTickets(item.contract_address, accountAddress);
             // 测试目前所有合约地址一样，去重
             if (!result) return bindBoxList;
-            const isFind = bindBoxList.find((item: any) => item.contract_address);
-            if (!isFind) {
-                bindBoxList.push({ id: item.id, ...result });
-            }
-            // bindBoxList.push(result);
+            // const isFind = bindBoxList.find((item: any) => item.contract_address);
+            // if (!isFind) {
+            //     bindBoxList.push({ id: item.id, ...result });
+            // }
+            bindBoxList.push(result);
         }
     } catch (error) {
         return bindBoxList;
@@ -144,7 +144,7 @@ export const queryAccountAllNftApi = async () => {
         {
             method: "where",
             field: "status",
-            value: "ACTIVE",
+            value: "1",
             operator: "=",
         },
     ];
@@ -173,6 +173,7 @@ export const queryAccountAllNftApi = async () => {
     }
 };
 
+//查询指定的nft
 export const queryNftApi = async (id: number) => {
     try {
         const allNftApi = await queryAccountAllNftApi();
@@ -180,4 +181,32 @@ export const queryNftApi = async (id: number) => {
     } catch (error) {
         return {};
     }
+};
+
+//查询交易记录
+export const queryTransferHistory = async (tokenId: number, contractAddress: string) => {
+    let prixZero = "0";
+    for (let i = 1; i < 63; i++) {
+        prixZero += "0";
+    }
+    const oxTokenId = `0x${prixZero}${tokenId.toString(16)}`;
+    const queryParams = [
+        {
+            method: "table",
+            table: "nft_transfer_records",
+        },
+        {
+            method: "where",
+            field: "token_id",
+            value: oxTokenId,
+            operator: "=",
+        },
+        {
+            method: "where",
+            field: "contract_address",
+            value: `${contractAddress.toLowerCase()}`,
+            operator: "=",
+        },
+    ];
+    return await queryDbChainData(queryParams, true);
 };

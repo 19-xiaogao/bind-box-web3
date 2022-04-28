@@ -18,7 +18,7 @@ export const buyTicketsApi = (count: number, price: number, contractAddress: str
     const DRC721Contract = initDRC721Contract(contractAddress);
 
     return DRC721Contract["buyTickets"](count, {
-        gasLimit: 300000,
+        // gasLimit: 300000,
         value: ethers.utils.parseEther(String(price)),
     });
 };
@@ -32,19 +32,25 @@ export const curSoldTicketsApi = (contractAddress: string) => {
 export const openBindBoxApi = async (contractAddress: string) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
 
-    const result = await DRC721Contract.safeMint();
+    let result: any;
+
+    try {
+        result = await DRC721Contract.safeMint();
+    } catch (error: any) {
+        if (error.code === 4001) {
+            return { status: false };
+        }
+    }
+
+    if (!result) throw new Error("用户取消了授权");
 
     return new Promise((resolve, reject) => {
-        try {
-            DRC721Contract.on("Transfer", async (...args) => {
-                if (args[3].transactionHash === result.hash) {
-                    const result = await DRC721Contract.tokenURI(parseInt(args[2]._hex));
-                    resolve(JSON.parse(base64.decode(result)));
-                }
-            });
-        } catch (error) {
-            reject(error);
-        }
+        DRC721Contract.on("Transfer", async (...args) => {
+            if (args[3].transactionHash === result.hash) {
+                const result = await DRC721Contract.tokenURI(parseInt(args[2]._hex));
+                resolve(JSON.parse(base64.decode(result)));
+            }
+        });
     });
 };
 
