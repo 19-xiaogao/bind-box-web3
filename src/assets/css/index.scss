@@ -31,11 +31,14 @@ main {
     max-width: 1200px;
     margin: 10px auto;
     margin-bottom: 200px;
+    min-height: 9vh;
 }
+
 p {
     margin: 0;
     padding: 0;
 }
+
 ul li {
     list-style: none;
 }

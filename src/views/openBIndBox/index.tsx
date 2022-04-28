@@ -67,16 +67,16 @@ function BindBoxDetailJsx() {
 
     const handleBuyBindBoxClick = async () => {
         if (Number(ticketsCount) === 0) return
-        try {
-            setSpinning(true)
-            const result: any = await openBindBoxApi(bindDetailBox.contract_address)
-            setSpinning(false)
-            setRewardObject({ name: result.name, lever: result.attributes[0].level, image: result.image, visible: true })
-            queryTicketsCount(bindDetailBox.contract_address, window.ethereum.selectedAddress)
-        } catch (error) {
-            notificationInfo("未知错误...")
-            setSpinning(false)
+
+        setSpinning(true)
+        const result: any = await openBindBoxApi(bindDetailBox.contract_address)
+        setSpinning(false)
+        if (!result.status) {
+            return notificationInfo("用户取消了购买")
         }
+        setRewardObject({ name: result.name, lever: result.attributes[0].level, image: result.image, visible: true })
+        queryTicketsCount(bindDetailBox.contract_address, window.ethereum.selectedAddress)
+
     };
 
     useEffect(() => {

@@ -118,7 +118,7 @@ function BindBoxDetailJsx() {
                 <div className="nft-decs">
                     <div>{item.name}</div>
                     <div>{item.attributes[0].level}</div>
-                    <div>发行数量 : 30 </div>
+                    {/* <div>发行数量 : 30 </div> */}
                     <div>概率 : {item.attributes[0].probability}</div>
                 </div>
             </div>

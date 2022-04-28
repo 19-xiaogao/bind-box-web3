@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
-import HeaderJsx from "../../components/views/Header";
+import HeaderJsx from "@/components/views/Header";
 import FooterJSX from "@/components/views/footer";
 
 import "./allBindBox.scss";

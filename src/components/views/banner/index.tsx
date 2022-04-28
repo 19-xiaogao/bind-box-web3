@@ -17,7 +17,6 @@ function BannerJsx() {
     const getBannerList = async () => {
         try {
             const result = await queryBannerApi()
-            console.log(result);
             setBannerList(result)
         } catch (error) {
             setBannerList([])

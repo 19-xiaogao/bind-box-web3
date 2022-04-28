@@ -5,10 +5,11 @@ import { Collapse, Spin } from 'antd';
 import FooterJSX from "@/components/views/footer";
 import HeaderJsx from "@/components/views/Header";
 import ExamplesModalJSX from "./examplesModal";
-import { queryNftApi, transferFromNftApi } from "@/api/api"
-import "./nftDetails.scss"
-import { notificationInfo, notificationSuccess } from "@/utils";
+import { notificationInfo, notificationSuccess, msFormatTime } from "@/utils";
 import { IMetamaskErrResponse } from "@/types/metamask";
+import { queryNftApi, transferFromNftApi, queryTransferHistory } from "@/api/api"
+import "./nftDetails.scss"
+
 
 const { Panel } = Collapse;
 const initValue = {
@@ -22,8 +23,9 @@ const initValue = {
 
 export const NftDetailJsx = () => {
     const [searchParams] = useSearchParams();
-    const [nftDetails, setNftDetails] = useState<any>(initValue)
+    const [nftDetails, setNftDetails] = useState<typeof initValue>(initValue)
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [transferHistory, setTransferHistory] = useState([])
     const [spinning, setSpinning] = useState(false)
 
     const id = searchParams.get("id") as string;
@@ -31,6 +33,7 @@ export const NftDetailJsx = () => {
     const handleExamplesClick = () => {
         setIsModalVisible(true)
     }
+
     const handleExamplesOk = async (address: string) => {
         if (address.length !== 42) return notificationInfo("地址格式错误,请输入ethereum地址")
         if (window.ethereum.selectedAddress.toLowerCase() === address.toLowerCase()) return notificationInfo("请勿填写自己的地址")
@@ -55,10 +58,20 @@ export const NftDetailJsx = () => {
         setIsModalVisible(false)
     }
 
-
+    const renderTransferHistory = () => {
+        return transferHistory.map((item: any) => (<div className="trading-history-list" key={item.id}>
+            <span>{parseInt(item.from) === 0 ? "-" : item.from}</span>
+            <span>{item.to}</span>
+            <span>{msFormatTime(item.created_at)}</span>
+        </div>))
+    }
     useEffect(() => {
-        queryNftApi(Number(id)).then(res => {
+        queryNftApi(Number(id)).then((res: typeof initValue) => {
             setNftDetails(res)
+            queryTransferHistory(res.tokenId, res.contractAddress).then(res => {
+                console.log(res);
+                setTransferHistory(res)
+            })
         })
     }, [])
     return <div className="root-page">
@@ -74,7 +87,7 @@ export const NftDetailJsx = () => {
                         <div className="box-price-message">
                             <div className="box-price">
                                 <div>等级</div>
-                                <div>{nftDetails.attributes[0].level}</div>
+                                <div>{nftDetails.attributes[0].lever}</div>
                             </div>
                             <div className="box-end-time">
                                 <div className="time-title">TokenId</div>
@@ -111,58 +124,7 @@ export const NftDetailJsx = () => {
                             <span>Date</span>
                         </div>
                         <div className="trading-history-content">
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
-                            <div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div><div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div><div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div><div className="trading-history-list">
-                                <span>ox12312312</span>
-                                <span>ox12312aa</span>
-                                <span>2022-11-23</span>
-                            </div>
+                            {renderTransferHistory()}
                         </div>
                     </Panel>
                 </Collapse>

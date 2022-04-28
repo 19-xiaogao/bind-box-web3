@@ -15,3 +15,7 @@ export function notificationError(desc: string) {
 export const formatTime = (time: string) => {
     return dayjs(Number(time) * 1000).format("YYYY-MM-DD");
 };
+
+export const msFormatTime = (time: number) => {
+    return dayjs(Number(time)).format("YYYY-MM-DD HH:mm:ss");
+};
