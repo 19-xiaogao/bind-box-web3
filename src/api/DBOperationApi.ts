@@ -4,6 +4,7 @@ import { createAccessToken, getProvider } from "@/api/initAdmin";
 import * as base64 from "js-base64";
 import DBchainConfig from "./config";
 import { initDRC721Contract, getLatestTokenIdApi, ownerOfAPi, tokenURIAPi } from "./DRC721Api";
+import { BindBoxInterface, BindBoxDetailInterface } from "@/types";
 
 const DBOperationContractAddress = "0x536D3b6B9899Df65b4d32072f1Cf34971Ec80229";
 
@@ -40,7 +41,7 @@ export const queryBindBoxApi = async (offset: number, limit: number) => {
 };
 
 export const queryBannerApi = async () => {
-    const queryParams: any = [
+    const queryParams = [
         { method: "table", table: "contracts" },
         {
             method: "where",
@@ -54,7 +55,7 @@ export const queryBannerApi = async () => {
 };
 
 export const queryBindBoxCountApi = async () => {
-    const queryParams: any = [{ method: "table", table: "contracts" }, { method: "count" }];
+    const queryParams = [{ method: "table", table: "contracts" }, { method: "count" }];
     return await queryDbChainData(queryParams);
 };
 

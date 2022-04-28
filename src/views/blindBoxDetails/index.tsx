@@ -4,29 +4,41 @@ import { useSearchParams } from "react-router-dom";
 import HeaderJsx from "@/components/views/Header";
 import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/api";
 import { formatTime, notificationInfo, notificationSuccess } from "@/utils";
-import { IMetamaskErrResponse } from "@/types/metamask";
+import { IMetamaskErrResponse, BindBoxInterface, BindBoxStatus } from "@/types";
 import "./bindBoxDetails.scss";
 import FooterJSX from "@/components/views/footer";
 
-const initValue = {
+const initValue: BindBoxInterface = {
     contract_address: "",
     created_at: "",
     id: "",
-    price: "",
+    price: 0,
     release_number: "",
     release_time: "",
     tx_hash: "",
+    created_by: "",
+    status: BindBoxStatus.notShow,
     desc: {
         desc: "",
         name: "",
         nft_metadatas: [
             {
                 image: "",
+                name:"",
+                desc:"",
+                attributes:[]
             },
         ],
     },
 };
-const reducer = (state = initValue, action: any) => {
+type TimeType = string | number
+
+type ReducerActionType = {
+    type: string,
+    payload: BindBoxInterface
+}
+
+const reducer = (state = initValue, action: ReducerActionType) => {
     switch (action.type) {
         case "change":
             return { ...state, ...action.payload };
@@ -35,16 +47,17 @@ const reducer = (state = initValue, action: any) => {
     }
 };
 
+
 function BindBoxDetailJsx() {
     const [searchParams] = useSearchParams();
     const [bindDetailBox, dispatchBindDetailBox] = useReducer(reducer, initValue);
     const [numberRemainCounts, setNumberRemainCounts] = useState(0);
     const [buyCount, setBuyCount] = useState(1);
 
-    const [d, setDay] = useState<any>(0);
-    const [h, setHours] = useState<any>(0);
-    const [m, setMinutes] = useState<any>(0);
-    const [s, setSeconds] = useState<any>(0);
+    const [d, setDay] = useState<TimeType>(0);
+    const [h, setHours] = useState<TimeType>(0);
+    const [m, setMinutes] = useState<TimeType>(0);
+    const [s, setSeconds] = useState<TimeType>(0);
 
     const id = searchParams.get("id") as string;
 
@@ -63,7 +76,7 @@ function BindBoxDetailJsx() {
         if (!window.ethereum.selectedAddress) {
             return notificationInfo("请先授权该网站。");
         }
-        // if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
+        if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
         try {
             const result = await buyTicketsApi(
                 buyCount,
@@ -82,7 +95,7 @@ function BindBoxDetailJsx() {
     };
 
     useEffect(() => {
-        let time: any;
+        let time: NodeJS.Timer;
         queryBindBoxDetail().then((result) => {
             time = setInterval(() => {
                 intervalTime(result.release_time);
@@ -110,7 +123,7 @@ function BindBoxDetailJsx() {
     };
 
     const renderNftList = () => {
-        return bindDetailBox.desc.nft_metadatas.slice(1).map((item: any, key: number) => (
+        return bindDetailBox.desc.nft_metadatas.slice(1).map((item, key: number) => (
             <div className="box" key={key}>
                 <div className="nft">
                     <img src={item.image} alt="" />

@@ -3,3 +3,4 @@ export interface IMetamaskErrResponse {
     message: string;
     stack: string;
 }
+
