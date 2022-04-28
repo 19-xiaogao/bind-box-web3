@@ -3,8 +3,14 @@ import DBOperation from "./abi/DBOperation.json";
 import { createAccessToken, getProvider } from "@/api/initAdmin";
 import * as base64 from "js-base64";
 import DBchainConfig from "./config";
-import { initDRC721Contract, getLatestTokenIdApi, ownerOfAPi, tokenURIAPi } from "./DRC721Api";
-import { BindBoxInterface, BindBoxDetailInterface } from "@/types";
+import { NftMetaDataInterface } from "@/types";
+import {
+    initDRC721Contract,
+    getLatestTokenIdApi,
+    ownerOfAPi,
+    tokenURIAPi,
+    queryGetRulesApi,
+} from "./DRC721Api";
 
 const DBOperationContractAddress = "0x536D3b6B9899Df65b4d32072f1Cf34971Ec80229";
 
@@ -99,7 +105,7 @@ export async function balanceOfTickets(contract_address: string, accountAddress:
     };
 }
 
-// 查询自己的nft
+// 查询自己的盲盒
 export const queryAllPrivateBindBox = async (accountAddress: string) => {
     const queryParams = [
         {
@@ -115,7 +121,6 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
         },
     ];
     const parseResult = await queryDbChainData(queryParams, true);
-
     const bindBoxList: any = [];
     try {
         for await (let item of parseResult) {
@@ -126,9 +131,10 @@ export const queryAllPrivateBindBox = async (accountAddress: string) => {
             // if (!isFind) {
             //     bindBoxList.push({ id: item.id, ...result });
             // }
-            bindBoxList.push(result);
+            bindBoxList.push({ id: item.id, ...result });
         }
     } catch (error) {
+        console.log(error);
         return bindBoxList;
     }
     return bindBoxList;
@@ -210,4 +216,37 @@ export const queryTransferHistory = async (tokenId: number, contractAddress: str
         },
     ];
     return await queryDbChainData(queryParams, true);
+};
+
+export const classData = (arr: NftMetaDataInterface[]) => {
+    const map = new Map();
+    for (let i = 0; i < arr.length; i++) {
+        const lever = arr[i].attributes[0].level;
+        if (map.get(lever)) {
+            map.set(lever, map.get(lever) + 1);
+            continue;
+        }
+        map.set(lever, 1);
+    }
+    return map;
+};
+
+export const querySyntheticRules = async () => {
+    const result = await queryBindBoxApi(0, 100);
+
+    for await (let item of result) {
+        let rulesResult = await queryGetRulesApi(item.contract_address);
+        const nfts = await queryAccountAllNftApi();
+
+        const sameClassNft = nfts.filter((v: any) => item.contract_address === v.contractAddress);
+        const mapSameClassNft = classData(sameClassNft);
+
+        rulesResult = rulesResult.map((item: any) => ({ ...JSON.parse(base64.decode(item)) }));
+        return rulesResult.map((item: NftMetaDataInterface) => ({
+            
+            level: item.attributes[0].level,
+            image: item.image,
+            count: mapSameClassNft.get(item.attributes[0].level),
+        }));
+    }
 };

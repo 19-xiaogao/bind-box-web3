@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 import "./personAsset.scss";
 import HeaderJsx from "../../components/views/Header";
 import { Empty } from "antd"
-import { queryAllPrivateBindBox, queryAccountAllNftApi } from "@/api/api";
+import { queryAllPrivateBindBox, queryAccountAllNftApi, querySyntheticRules } from "@/api/api";
 import FooterJSX from "@/components/views/footer";
 enum Status {
     bindBox,
-    nft
+    nft,
+    synthetic
 }
 function PersonAssetJsx() {
     const [myBindBoxList, setMyBindBoxList] = useState([]);
@@ -16,9 +17,12 @@ function PersonAssetJsx() {
     const navigate = useNavigate();
     useEffect(() => {
         queryMyBindBox(window.ethereum.selectedAddress)
+        querySyntheticRules().then((res) => {
+            console.log(res);
+        })
     }, []);
 
-    const handleClickSwitchClick = (status: Status) => {
+    const handleSwitchClick = (status: Status) => {
         setSidebar(status)
         if (status === Status.bindBox) {
             return queryMyBindBox(window.ethereum.selectedAddress);
@@ -26,9 +30,12 @@ function PersonAssetJsx() {
             return queryAccountAllNft()
         }
     }
+
     const queryMyBindBox = async (accountAddress: string) => {
         try {
             const result = await queryAllPrivateBindBox(accountAddress);
+            console.log(result);
+
             setMyBindBoxList(result);
         } catch (error) {
             setMyBindBoxList([]);
@@ -44,7 +51,10 @@ function PersonAssetJsx() {
         }
     }
 
+
     const handleBindBoxClick = (id: string) => {
+        console.log(id);
+
         navigate(`/openBindBox?id=${id}`);
     };
 
@@ -80,6 +90,16 @@ function PersonAssetJsx() {
         ));
     }
 
+    const renderSpecifiedElement = () => {
+        if (sidebarValue === Status.bindBox) {
+            return renderBoxList()
+        } else if (sidebarValue === Status.nft) {
+            return renderAccountsNftList()
+        } else {
+            return <div>=-=</div>
+        }
+    }
+
     return (
         <div className="root-page">
             <HeaderJsx />
@@ -96,12 +116,13 @@ function PersonAssetJsx() {
             </div>
             <main className="table">
                 <div className="sidebar">
-                    <div onClick={() => handleClickSwitchClick(Status.bindBox)} className={sidebarValue === Status.bindBox ? "cover" : ''}>我的盲盒</div>
-                    <div onClick={() => handleClickSwitchClick(Status.nft)} className={sidebarValue === Status.nft ? "cover" : ''}>nft</div>
+                    <div onClick={() => handleSwitchClick(Status.bindBox)} className={sidebarValue === Status.bindBox ? "cover" : ''}>我的盲盒</div>
+                    <div onClick={() => handleSwitchClick(Status.nft)} className={sidebarValue === Status.nft ? "cover" : ''}>nft</div>
+                    <div onClick={() => handleSwitchClick(Status.synthetic)} className={sidebarValue === Status.synthetic ? "cover" : ""}>NFT合成</div>
                 </div>
                 {/* {myBindBoxList.length === 0 ? <Empty description={false} className="not-data" /> : renderContent()} */}
                 <div className="t-content">
-                    {sidebarValue === Status.bindBox ? renderBoxList() : renderAccountsNftList()}
+                    {renderSpecifiedElement()}
                 </div>
             </main>
             <FooterJSX />

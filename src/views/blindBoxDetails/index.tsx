@@ -24,9 +24,9 @@ const initValue: BindBoxInterface = {
         nft_metadatas: [
             {
                 image: "",
-                name:"",
-                desc:"",
-                attributes:[]
+                name: "",
+                desc: "",
+                attributes: [{ level: "", probability: "" }]
             },
         ],
     },
@@ -76,7 +76,7 @@ function BindBoxDetailJsx() {
         if (!window.ethereum.selectedAddress) {
             return notificationInfo("请先授权该网站。");
         }
-        if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
+        // if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
         try {
             const result = await buyTicketsApi(
                 buyCount,
@@ -123,6 +123,7 @@ function BindBoxDetailJsx() {
     };
 
     const renderNftList = () => {
+        if (bindDetailBox.desc.nft_metadatas.slice(1).length === 0) return
         return bindDetailBox.desc.nft_metadatas.slice(1).map((item, key: number) => (
             <div className="box" key={key}>
                 <div className="nft">
@@ -130,9 +131,9 @@ function BindBoxDetailJsx() {
                 </div>
                 <div className="nft-decs">
                     <div>{item.name}</div>
-                    <div>{item.attributes[0].level}</div>
+                    <div>{item.attributes ? item.attributes[0].level : ""}</div>
                     {/* <div>发行数量 : 30 </div> */}
-                    <div>概率 : {item.attributes[0].probability}</div>
+                    <div>概率 : {item.attributes ? item.attributes[0].probability : "可合成"}</div>
                 </div>
             </div>
         ));
