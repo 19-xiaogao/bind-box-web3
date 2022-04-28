@@ -38,7 +38,6 @@ function PersonAssetJsx() {
     const queryAccountAllNft = async () => {
         try {
             const accountAllResult: any = await queryAccountAllNftApi()
-            console.log(accountAllResult);
             setAccountAllNft(accountAllResult)
         } catch (error) {
             setAccountAllNft([])

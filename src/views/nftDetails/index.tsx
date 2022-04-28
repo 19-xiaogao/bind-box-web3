@@ -69,7 +69,6 @@ export const NftDetailJsx = () => {
         queryNftApi(Number(id)).then((res: typeof initValue) => {
             setNftDetails(res)
             queryTransferHistory(res.tokenId, res.contractAddress).then(res => {
-                console.log(res);
                 setTransferHistory(res)
             })
         })

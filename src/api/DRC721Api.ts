@@ -80,7 +80,7 @@ export const transferFromNftApi = async (
     try {
         return new Promise((resolve, reject) => {
             DRC721Contract.on("Transfer", async (...args) => {
-                console.log(args[3].transactionHash);
+                
                 if (args[3].transactionHash === result.hash) {
                     resolve({ status: true });
                 }

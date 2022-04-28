@@ -7,9 +7,7 @@ import { formatTime } from "@/utils"
 function BannerJsx() {
     const [bannerList, setBannerList] = useState([])
     const navigate = useNavigate()
-    function onChange(currentSlide: number) {
-        console.log("banner changed ", currentSlide);
-    }
+  
     useEffect(() => {
         getBannerList()
     }, [])
