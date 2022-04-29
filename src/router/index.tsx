@@ -6,7 +6,7 @@ import BindBoxDetailJsx from "../views/blindBoxDetails";
 import PersonAssetJsx from "../views/personalAssets";
 import OpenBindBoxJsx from "../views/openBIndBox";
 import NftDetailJsx from "@/views/nftDetails";
-import { Spin } from "antd";
+import ContextJSX from "@/components/hooks/globalContent"
 const RouterJsx = () => {
     useEffect(() => {
         // 监听账户发生变化
@@ -17,16 +17,17 @@ const RouterJsx = () => {
     }, []);
     return (
         <BrowserRouter>
-            <Routes>
-                {/* <Spin tip="加载中..." spinning={true}> */}
+            <ContextJSX>
+                <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/allBindBox" element={<AllBindBox />} />
                     <Route path="/bindBoxDetails" element={<BindBoxDetailJsx />} />
                     <Route path="/assets" element={<PersonAssetJsx />} />
                     <Route path="/openBindBox" element={<OpenBindBoxJsx />} />
                     <Route path="/nftDetailJsx" element={<NftDetailJsx />} />
-                {/* </Spin> */}
-            </Routes>
+                </Routes>
+            </ContextJSX>
+
         </BrowserRouter >
     );
 };

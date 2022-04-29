@@ -2,11 +2,14 @@ import React, { useEffect, useReducer, useState } from "react";
 import { InputNumber } from "antd";
 import { useSearchParams } from "react-router-dom";
 import HeaderJsx from "@/components/views/Header";
+import FooterJSX from "@/components/views/footer";
+
 import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/api";
 import { formatTime, notificationInfo, notificationSuccess } from "@/utils";
 import { IMetamaskErrResponse, BindBoxInterface, BindBoxStatus } from "@/types";
 import "./bindBoxDetails.scss";
-import FooterJSX from "@/components/views/footer";
+
+
 
 const initValue: BindBoxInterface = {
     contract_address: "",
@@ -58,6 +61,8 @@ function BindBoxDetailJsx() {
     const [h, setHours] = useState<TimeType>(0);
     const [m, setMinutes] = useState<TimeType>(0);
     const [s, setSeconds] = useState<TimeType>(0);
+
+
 
     const id = searchParams.get("id") as string;
 

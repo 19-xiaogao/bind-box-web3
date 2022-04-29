@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import "./personAsset.scss";
-import HeaderJsx from "../../components/views/Header";
-import { Button, Empty } from "antd"
-import { queryAllPrivateBindBox, queryAccountAllNftApi, querySyntheticRules, synthesisApi } from "@/api/api";
+import HeaderJsx from "@/components/views/Header";
 import FooterJSX from "@/components/views/footer";
+import { context } from "@/components/hooks/globalContent";
+import RewardJsx from "../openBIndBox/rewardJsx";
+import { Button } from "antd"
+import { queryAllPrivateBindBox, queryAccountAllNftApi, querySyntheticRules, synthesisApi } from "@/api/api";
 import { notificationInfo } from "@/utils";
+import "./personAsset.scss";
+
 enum Status {
     bindBox,
     nft,
@@ -16,29 +19,32 @@ function PersonAssetJsx() {
     const [sidebarValue, setSidebar] = useState(Status.bindBox)
     const [accountAllNft, setAccountAllNft] = useState([])
     const [synthsRules, setSynthsRules] = useState([])
+    const [rewardVisible, setRewardVisible] = useState(false)
+    const [rewardObject, setRewardObject] = useState({ name: '', lever: "", image: "" })
+
     const navigate = useNavigate();
+    const contextValue = useContext(context)
+
     useEffect(() => {
         queryMyBindBox(window.ethereum.selectedAddress)
-        querySyntheticRules().then((res) => {
-
-            setSynthsRules(res)
-        })
     }, []);
 
     const handleSwitchClick = (status: Status) => {
         setSidebar(status)
         if (status === Status.bindBox) {
-            return queryMyBindBox(window.ethereum.selectedAddress);
-        } else {
-            return queryAccountAllNft()
+            queryMyBindBox(window.ethereum.selectedAddress);
+        } else if (status === Status.nft) {
+            queryAccountAllNft()
+        } else if (status === Status.synthetic) {
+            querySyntheticRules().then((res) => {
+                setSynthsRules(res)
+            })
         }
     }
 
     const queryMyBindBox = async (accountAddress: string) => {
         try {
             const result = await queryAllPrivateBindBox(accountAddress);
-            console.log(result);
-
             setMyBindBoxList(result);
         } catch (error) {
             setMyBindBoxList([]);
@@ -56,7 +62,6 @@ function PersonAssetJsx() {
 
 
     const handleBindBoxClick = (id: string) => {
-        console.log(id);
 
         navigate(`/openBindBox?id=${id}`);
     };
@@ -102,16 +107,29 @@ function PersonAssetJsx() {
     }
 
     const handleSyntheticBtn = (contract_address: string, rules: []) => {
-        console.log(contract_address);
-        const tokenIds = rules.map((item: any) => item.tokenId[0])
 
-        synthesisApi(contract_address, tokenIds).then((res: any) => {
-            console.log(res);
+        const tokenIds = rules.map((item: any) => item.tokenId[0])
+        contextValue.handleSetGlobalLoading(true)
+        synthesisApi(contract_address, tokenIds).then((result: any) => {
+
+            setRewardObject({ name: result.name, lever: result.attributes[0].level, image: result.image })
+            setRewardVisible(true)
+            contextValue.handleSetGlobalLoading(false)
+            querySyntheticRules().then((res) => {
+                setSynthsRules(res)
+            })
         }).catch(err => {
+            contextValue.handleSetGlobalLoading(false)
+            setRewardVisible(false)
             if (err.code === 4001) {
                 notificationInfo("您取消了合成")
             }
         })
+    }
+
+    const handleSureClick = () => {
+        setRewardVisible(false)
+        setRewardObject({ name: '', lever: "", image: "" })
     }
 
     const renderSynthetic = () => {
@@ -171,11 +189,10 @@ function PersonAssetJsx() {
                     <div onClick={() => handleSwitchClick(Status.nft)} className={sidebarValue === Status.nft ? "cover" : ''}>nft</div>
                     <div onClick={() => handleSwitchClick(Status.synthetic)} className={sidebarValue === Status.synthetic ? "cover" : ""}>NFT合成</div>
                 </div>
-                {/* {myBindBoxList.length === 0 ? <Empty description={false} className="not-data" /> : renderContent()} */}
                 {renderSpecifiedElement()}
             </main>
+            {rewardVisible ? <RewardJsx visible={rewardVisible} {...rewardObject} handleSureClick={handleSureClick} /> : null}
             <FooterJSX />
-
         </div>
     );
 }
