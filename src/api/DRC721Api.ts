@@ -50,7 +50,7 @@ export const openBindBoxApi = async (contractAddress: string) => {
 
 export const getLatestTokenIdApi = (contractAddress: string) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
-    return DRC721Contract.getLatestTokenId();
+    return DRC721Contract.getIds();
 };
 
 export const ownerOfAPi = async (contractAddress: string, tokenId: number) => {
@@ -91,7 +91,6 @@ export const queryGetRulesApi = (contractAddress: string) => {
 
 export const synthesisApi = async (contractAddress: string, tokenId: number[]) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
-
     return new Promise(async (resolve, reject) => {
         DRC721Contract.synthesis(tokenId)
             .then((result: any) => {
@@ -103,6 +102,7 @@ export const synthesisApi = async (contractAddress: string, tokenId: number[]) =
                 });
             })
             .catch((error: any) => {
+                console.log(error);
                 if (error.code === 4001) {
                     reject({ ...error, status: false });
                 }

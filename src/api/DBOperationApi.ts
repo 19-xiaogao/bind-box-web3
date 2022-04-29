@@ -159,21 +159,21 @@ export const queryAccountAllNftApi = async () => {
     const parseResult = await queryDbChainData(queryParams, true);
     for await (let item of parseResult) {
         const result = await getLatestTokenIdApi(item.contract_address);
-        const count = parseInt(result._hex);
-        for (let i = 1; i <= count; i++) {
+        for (let i = 0; i < result.length; i++) {
+            const count = parseInt(result[i]._hex);
             try {
-                const ownerResult = await ownerOfAPi(item.contract_address, i);
+                const ownerResult = await ownerOfAPi(item.contract_address, count);
                 if (ownerResult.toLowerCase() == window.ethereum.selectedAddress.toLowerCase()) {
-                    const tokenUrlResult = await tokenURIAPi(item.contract_address, i);
+                    const tokenUrlResult = await tokenURIAPi(item.contract_address, count);
                     const decodeData = JSON.parse(base64.decode(tokenUrlResult));
                     accountAllNftData.push({
                         ...decodeData,
-                        tokenId: i,
+                        tokenId: count,
                         contractAddress: item.contract_address,
                     });
                 }
             } catch (error) {
-                // console.log(error);
+                console.log(error);
             }
         }
     }
@@ -250,8 +250,6 @@ export const querySyntheticRules = async () => {
         const mapSameClassNft = classData(sameClassNft);
 
         rulesResult = rulesResult.map((item: any) => ({ ...JSON.parse(base64.decode(item)) }));
-        console.log(rulesResult);
-        console.log(mapSameClassNft);
 
         rulesResult = rulesResult.map((item: NftMetaDataInterface) => ({
             level: item.attributes[0].level,
