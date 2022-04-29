@@ -53,7 +53,7 @@ export const getLatestTokenIdApi = (contractAddress: string) => {
     return DRC721Contract.getLatestTokenId();
 };
 
-export const ownerOfAPi = (contractAddress: string, tokenId: number) => {
+export const ownerOfAPi = async (contractAddress: string, tokenId: number) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
     return DRC721Contract.ownerOf(tokenId);
 };
@@ -87,4 +87,25 @@ export const transferFromNftApi = async (
 export const queryGetRulesApi = (contractAddress: string) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
     return DRC721Contract.getRules();
+};
+
+export const synthesisApi = async (contractAddress: string, tokenId: number[]) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+
+    return new Promise(async (resolve, reject) => {
+        DRC721Contract.synthesis(tokenId)
+            .then((result: any) => {
+                DRC721Contract.on("Synthesis", async (...args) => {
+                    if (args[1].transactionHash === result.hash) {
+                        const result = await DRC721Contract.tokenURI(parseInt(args[0]._hex));
+                        resolve(JSON.parse(base64.decode(result)));
+                    }
+                });
+            })
+            .catch((error: any) => {
+                if (error.code === 4001) {
+                    reject({ ...error, status: false });
+                }
+            });
+    });
 };

@@ -18,7 +18,7 @@ const initValue = {
     desc: "",
     tokenId: 0,
     image: "",
-    attributes: [{ lever: "" }]
+    attributes: [{ level: "" }]
 }
 
 export const NftDetailJsx = () => {
@@ -86,7 +86,7 @@ export const NftDetailJsx = () => {
                         <div className="box-price-message">
                             <div className="box-price">
                                 <div>等级</div>
-                                <div>{nftDetails.attributes[0].lever}</div>
+                                <div>{nftDetails.attributes[0].level}</div>
                             </div>
                             <div className="box-end-time">
                                 <div className="time-title">TokenId</div>

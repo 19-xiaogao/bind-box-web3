@@ -6,24 +6,28 @@ import BindBoxDetailJsx from "../views/blindBoxDetails";
 import PersonAssetJsx from "../views/personalAssets";
 import OpenBindBoxJsx from "../views/openBIndBox";
 import NftDetailJsx from "@/views/nftDetails";
+import { Spin } from "antd";
 const RouterJsx = () => {
     useEffect(() => {
         // 监听账户发生变化
         window.ethereum.on("accountsChanged", (accounts: string[]) => {
             window.location.href = "/";
         });
+
     }, []);
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/allBindBox" element={<AllBindBox />} />
-                <Route path="/bindBoxDetails" element={<BindBoxDetailJsx />} />
-                <Route path="/assets" element={<PersonAssetJsx />} />
-                <Route path="/openBindBox" element={<OpenBindBoxJsx />} />
-                <Route path="/nftDetailJsx" element={<NftDetailJsx />} />
+                {/* <Spin tip="加载中..." spinning={true}> */}
+                    <Route path="/" element={<Home />} />
+                    <Route path="/allBindBox" element={<AllBindBox />} />
+                    <Route path="/bindBoxDetails" element={<BindBoxDetailJsx />} />
+                    <Route path="/assets" element={<PersonAssetJsx />} />
+                    <Route path="/openBindBox" element={<OpenBindBoxJsx />} />
+                    <Route path="/nftDetailJsx" element={<NftDetailJsx />} />
+                {/* </Spin> */}
             </Routes>
-        </BrowserRouter>
+        </BrowserRouter >
     );
 };
 

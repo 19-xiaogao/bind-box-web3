@@ -11,6 +11,7 @@ export interface NftMetaDataInterface {
     image: string;
     name: string;
     desc: string;
+    tokenId?:number;
     attributes: NFtAttributesInterface[];
 }
 

@@ -76,7 +76,7 @@ function BindBoxDetailJsx() {
         } catch (error: any) {
             setSpinning(false)
             if (error.code === 4001) {
-                return notificationInfo("用户取消了购买")
+                return notificationInfo("您取消了购买")
             }
         }
 
@@ -95,8 +95,8 @@ function BindBoxDetailJsx() {
                 <div className="nft-decs">
                     <div>{item.name}</div>
                     <div>{item.attributes[0].level}</div>
-                    <div>发行数量 : 30 </div>
-                    <div>概率 : {item.attributes[0].probability}</div>
+                    {/* <div>发行数量 : 30 </div> */}
+                    <div>概率 : {item.attributes[0].probability ? item.attributes[0].probability : "合成得到"}</div>
                 </div>
             </div>
         ));

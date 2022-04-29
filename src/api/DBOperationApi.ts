@@ -156,12 +156,12 @@ export const queryAccountAllNftApi = async () => {
         },
     ];
     const accountAllNftData = [];
-    try {
-        const parseResult = await queryDbChainData(queryParams, true);
-        for await (let item of parseResult) {
-            const result = await getLatestTokenIdApi(item.contract_address);
-            const count = parseInt(result._hex);
-            for (let i = 1; i <= count; i++) {
+    const parseResult = await queryDbChainData(queryParams, true);
+    for await (let item of parseResult) {
+        const result = await getLatestTokenIdApi(item.contract_address);
+        const count = parseInt(result._hex);
+        for (let i = 1; i <= count; i++) {
+            try {
                 const ownerResult = await ownerOfAPi(item.contract_address, i);
                 if (ownerResult.toLowerCase() == window.ethereum.selectedAddress.toLowerCase()) {
                     const tokenUrlResult = await tokenURIAPi(item.contract_address, i);
@@ -172,12 +172,12 @@ export const queryAccountAllNftApi = async () => {
                         contractAddress: item.contract_address,
                     });
                 }
+            } catch (error) {
+                // console.log(error);
             }
         }
-        return accountAllNftData;
-    } catch (error) {
-        return accountAllNftData;
     }
+    return accountAllNftData;
 };
 
 //查询指定的nft
@@ -219,34 +219,51 @@ export const queryTransferHistory = async (tokenId: number, contractAddress: str
 };
 
 export const classData = (arr: NftMetaDataInterface[]) => {
+    arr = arr.filter((item: any) => item.attributes[0].level !== "X");
     const map = new Map();
     for (let i = 0; i < arr.length; i++) {
         const lever = arr[i].attributes[0].level;
         if (map.get(lever)) {
-            map.set(lever, map.get(lever) + 1);
+            map.set(lever, {
+                count: map.get(lever).count + 1,
+                tokenId: [...map.get(lever).tokenId, arr[i].tokenId],
+            });
             continue;
         }
-        map.set(lever, 1);
+        map.set(lever, {
+            count: 1,
+            tokenId: [arr[i].tokenId],
+        });
     }
     return map;
 };
 
 export const querySyntheticRules = async () => {
     const result = await queryBindBoxApi(0, 100);
-
+    const rules: any = [];
     for await (let item of result) {
         let rulesResult = await queryGetRulesApi(item.contract_address);
         const nfts = await queryAccountAllNftApi();
 
         const sameClassNft = nfts.filter((v: any) => item.contract_address === v.contractAddress);
+
         const mapSameClassNft = classData(sameClassNft);
 
         rulesResult = rulesResult.map((item: any) => ({ ...JSON.parse(base64.decode(item)) }));
-        return rulesResult.map((item: NftMetaDataInterface) => ({
-            
+        console.log(rulesResult);
+        console.log(mapSameClassNft);
+
+        rulesResult = rulesResult.map((item: NftMetaDataInterface) => ({
             level: item.attributes[0].level,
             image: item.image,
-            count: mapSameClassNft.get(item.attributes[0].level),
+            tokenId: mapSameClassNft.get(item.attributes[0].level)
+                ? mapSameClassNft.get(item.attributes[0].level).tokenId
+                : [],
+            count: mapSameClassNft.get(item.attributes[0].level)
+                ? mapSameClassNft.get(item.attributes[0].level).count
+                : 0,
         }));
+        rules.push({ rules: rulesResult, ...item });
     }
+    return rules;
 };

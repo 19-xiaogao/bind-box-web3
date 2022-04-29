@@ -133,7 +133,8 @@ function BindBoxDetailJsx() {
                     <div>{item.name}</div>
                     <div>{item.attributes ? item.attributes[0].level : ""}</div>
                     {/* <div>发行数量 : 30 </div> */}
-                    <div>概率 : {item.attributes ? item.attributes[0].probability : "可合成"}</div>
+                    <div>概率 : {item.attributes[0].probability ? item.attributes[0].probability : "合成得到"}</div>
+
                 </div>
             </div>
         ));
