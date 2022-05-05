@@ -107,8 +107,9 @@ function PersonAssetJsx() {
     }
 
     const handleSyntheticBtn = (contract_address: string, rules: []) => {
-
+        
         const tokenIds = rules.map((item: any) => item.tokenId[0])
+        
         contextValue.handleSetGlobalLoading(true)
         synthesisApi(contract_address, tokenIds).then((result: any) => {
 
