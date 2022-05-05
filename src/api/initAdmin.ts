@@ -41,8 +41,8 @@ export function createAccessToken() {
 export function getProvider() {
     if (window.ethereum.selectedAddress) {
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        return signer;
+
+        return provider;
     }
     return new ethers.providers.JsonRpcProvider(DBchainConfig.netWork);
 }
