@@ -9,7 +9,7 @@ import { IMetamaskErrResponse } from "@/types/metamask";
 const DRC751contractABI = DRC751;
 export function initDRC721Contract(contractAddress: string) {
     const provider = getProvider();
-    const Contract = new ethers.Contract(contractAddress, DRC751contractABI, provider);
+    const Contract = new ethers.Contract(contractAddress, DRC751contractABI, provider.getSigner());
     return Contract;
 }
 
@@ -107,5 +107,19 @@ export const synthesisApi = async (contractAddress: string, tokenId: number[]) =
                     reject({ ...error, status: false });
                 }
             });
+    });
+};
+
+export const nftRevertApi = async (contractAddress: string, tokenId: number) => {
+    const DRC721Contract = initDRC721Contract(contractAddress);
+    const provider = getProvider();
+    const result = await DRC721Contract.nftRevert(tokenId);
+    console.log(result);
+    return new Promise((resolve, reject) => {
+        provider.once(result.hash, (receipt) => {
+            if (receipt.transactionHash === result.hash) {
+                resolve(true);
+            }
+        });
     });
 };

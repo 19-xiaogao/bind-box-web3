@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Collapse } from 'antd';
 import FooterJSX from "@/components/views/footer";
@@ -7,7 +7,7 @@ import HeaderJsx from "@/components/views/Header";
 import { context } from "@/components/hooks/globalContent";
 import ExamplesModalJSX from "./examplesModal";
 import { notificationInfo, notificationSuccess, msFormatTime } from "@/utils";
-import { queryNftApi, transferFromNftApi, queryTransferHistory } from "@/api/api"
+import { queryNftApi, transferFromNftApi, queryTransferHistory, nftRevertApi } from "@/api/api"
 import { IMetamaskErrResponse } from "@/types/metamask";
 import "./nftDetails.scss"
 
@@ -60,6 +60,25 @@ export const NftDetailJsx = () => {
     const handleExamplesClose = () => {
         setIsModalVisible(false)
     }
+    const handleSplitNftClick = async () => {
+        try {
+            contextValue.handleSetGlobalLoading(true)
+            const result = await nftRevertApi(nftDetails.contractAddress, Number(nftDetails.tokenId))
+            notificationSuccess("您成功拆分了NFT")
+            contextValue.handleSetGlobalLoading(false)
+            setTimeout(() => {
+                navigate('/assets')
+            }, 1000);
+        } catch (error: IMetamaskErrResponse | any) {
+            contextValue.handleSetGlobalLoading(false)
+            if (error.code === 4001) notificationInfo("您取消了nft拆分")
+        }
+
+    }
+
+    const isShowSplitBtn = useCallback(() => {
+        return nftDetails.attributes[0].level === "X" ? <button className="split-btn" onClick={handleSplitNftClick}>拆解</button> : ""
+    }, [nftDetails.attributes[0].level])
 
     const renderTransferHistory = () => {
         return transferHistory.map((item: any) => (<div className="trading-history-list" key={item.id}>
@@ -107,8 +126,10 @@ export const NftDetailJsx = () => {
                         </div>
                     </div>
                     <div className="open-bind-box">
+                        {isShowSplitBtn()}
                         <button className="btn" onClick={handleExamplesClick}>转赠</button>
                     </div>
+
                 </div>
             </div>
             <div className="bind-box-decs">

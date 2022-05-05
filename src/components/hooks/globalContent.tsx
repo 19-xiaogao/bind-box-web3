@@ -12,6 +12,11 @@ export const context = createContext<ContextI>({
 })
 export const { Provider, Consumer } = context;
 
+const style = {
+    top: "50vh",
+    transform: " translateY(-50%)"
+}
+
 
 const ContextJSX: React.FunctionComponent = (props) => {
     const [loading, setLoading] = useState(false);
@@ -22,7 +27,7 @@ const ContextJSX: React.FunctionComponent = (props) => {
         handleSetGlobalLoading
     }
     return <Provider value={initValue} >
-        <Spin spinning={loading} tip="加载中..." >
+        <Spin spinning={loading} tip="加载中..." size="large" style={style}>
             {props.children}
         </Spin>
     </Provider>
