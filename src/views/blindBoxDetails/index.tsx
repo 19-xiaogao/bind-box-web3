@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useContext, useEffect, useReducer, useState } from "react";
 import { InputNumber } from "antd";
 import { useSearchParams } from "react-router-dom";
 import HeaderJsx from "@/components/views/Header";
@@ -8,6 +8,7 @@ import { queryBindBoxDetailApi, buyTicketsApi, curSoldTicketsApi } from "@/api/a
 import { formatTime, notificationInfo, notificationSuccess } from "@/utils";
 import { IMetamaskErrResponse, BindBoxInterface, BindBoxStatus } from "@/types";
 import "./bindBoxDetails.scss";
+import { context } from "@/components/hooks/globalContent";
 
 
 
@@ -62,7 +63,7 @@ function BindBoxDetailJsx() {
     const [m, setMinutes] = useState<TimeType>(0);
     const [s, setSeconds] = useState<TimeType>(0);
 
-
+    const contextValue = useContext(context)
 
     const id = searchParams.get("id") as string;
 
@@ -81,15 +82,19 @@ function BindBoxDetailJsx() {
         if (!window.ethereum.selectedAddress) {
             return notificationInfo("请先授权该网站。");
         }
-        // if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
+        if (isShowTime(bindDetailBox.release_time)) return notificationInfo("未到开售时间")
         try {
+            contextValue.handleSetGlobalLoading(true)
             const result = await buyTicketsApi(
                 buyCount,
                 bindDetailBox.price * buyCount,
                 bindDetailBox.contract_address
             );
+            contextValue.handleSetGlobalLoading(false)
+            setBuyCount(1)
             notificationSuccess("购买成功,区块上链中...");
         } catch (error: IMetamaskErrResponse | any) {
+            contextValue.handleSetGlobalLoading(false)
             if (error.code === 4001) {
                 notificationInfo("您拒绝了购买。");
             }
@@ -195,6 +200,7 @@ function BindBoxDetailJsx() {
                                 min={1}
                                 max={numberRemainCounts}
                                 defaultValue={1}
+                                value={buyCount}
                                 className="input"
                                 onChange={handleInputNumberChange}
                             />
