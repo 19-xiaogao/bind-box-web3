@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import HeaderJsx from "@/components/views/Header";
 import FooterJSX from "@/components/views/footer";
 import { context } from "@/components/hooks/globalContent";
@@ -7,39 +7,45 @@ import RewardJsx from "../openBIndBox/rewardJsx";
 import { Button } from "antd"
 import { queryAllPrivateBindBox, queryAccountAllNftApi, querySyntheticRules, synthesisApi } from "@/api/api";
 import { notificationInfo } from "@/utils";
+import { SelectStatus } from "@/types"
 import "./personAsset.scss";
 
-enum Status {
-    bindBox,
-    nft,
-    synthetic
-}
+
 function PersonAssetJsx() {
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const contextValue = useContext(context)
+    const sidebarParamsType = searchParams.get("type") as unknown as SelectStatus;
+
     const [myBindBoxList, setMyBindBoxList] = useState([]);
-    const [sidebarValue, setSidebar] = useState(Status.bindBox)
+    const [sidebarValue, setSidebar] = useState(sidebarParamsType)
     const [accountAllNft, setAccountAllNft] = useState([])
     const [synthsRules, setSynthsRules] = useState([])
     const [rewardVisible, setRewardVisible] = useState(false)
     const [rewardObject, setRewardObject] = useState({ name: '', lever: "", image: "" })
 
-    const navigate = useNavigate();
-    const contextValue = useContext(context)
 
     useEffect(() => {
-        queryMyBindBox(window.ethereum.selectedAddress)
-    }, []);
+        initData()
+    });
 
-    const handleSwitchClick = (status: Status) => {
-        setSidebar(status)
-        if (status === Status.bindBox) {
-            queryMyBindBox(window.ethereum.selectedAddress);
-        } else if (status === Status.nft) {
-            queryAccountAllNft()
-        } else if (status === Status.synthetic) {
-            querySyntheticRules().then((res) => {
+    const initData = () => {
+        if (sidebarValue === SelectStatus.bindBox) {
+            return queryMyBindBox(window.ethereum.selectedAddress)
+        }
+        if (sidebarValue == SelectStatus.nft) {
+            return queryAccountAllNft()
+        }
+        if (sidebarValue === SelectStatus.synthetic) {
+            return querySyntheticRules().then((res) => {
                 setSynthsRules(res)
             })
         }
+    }
+
+    const handleSwitchClick = (status: SelectStatus) => {
+        setSidebar(status)
+        navigate("/assets?type=" + status);
     }
 
     const queryMyBindBox = async (accountAddress: string) => {
@@ -107,9 +113,9 @@ function PersonAssetJsx() {
     }
 
     const handleSyntheticBtn = (contract_address: string, rules: []) => {
-        
+
         const tokenIds = rules.map((item: any) => item.tokenId[0])
-        
+
         contextValue.handleSetGlobalLoading(true)
         synthesisApi(contract_address, tokenIds).then((result: any) => {
 
@@ -161,9 +167,9 @@ function PersonAssetJsx() {
     }
 
     const renderSpecifiedElement = () => {
-        if (sidebarValue === Status.bindBox) {
+        if (sidebarValue === SelectStatus.bindBox) {
             return renderBoxList()
-        } else if (sidebarValue === Status.nft) {
+        } else if (sidebarValue === SelectStatus.nft) {
             return renderAccountsNftList()
         } else {
             return renderSynthetic()
@@ -186,9 +192,9 @@ function PersonAssetJsx() {
             </div>
             <main className="table">
                 <div className="sidebar">
-                    <div onClick={() => handleSwitchClick(Status.bindBox)} className={sidebarValue === Status.bindBox ? "cover" : ''}>我的盲盒</div>
-                    <div onClick={() => handleSwitchClick(Status.nft)} className={sidebarValue === Status.nft ? "cover" : ''}>nft</div>
-                    <div onClick={() => handleSwitchClick(Status.synthetic)} className={sidebarValue === Status.synthetic ? "cover" : ""}>NFT合成</div>
+                    <div onClick={() => handleSwitchClick(SelectStatus.bindBox)} className={sidebarValue === SelectStatus.bindBox ? "cover" : ''}>我的盲盒</div>
+                    <div onClick={() => handleSwitchClick(SelectStatus.nft)} className={sidebarValue === SelectStatus.nft ? "cover" : ''}>nft</div>
+                    <div onClick={() => handleSwitchClick(SelectStatus.synthetic)} className={sidebarValue === SelectStatus.synthetic ? "cover" : ""}>NFT合成</div>
                 </div>
                 {renderSpecifiedElement()}
             </main>

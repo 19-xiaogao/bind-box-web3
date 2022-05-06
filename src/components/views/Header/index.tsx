@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { IMetamaskErrResponse } from "@/types/metamask";
+import { IMetamaskErrResponse, SelectStatus } from "@/types";
 import { notificationInfo, notificationSuccess } from "@/utils/index";
 import "./header.scss";
 
@@ -40,7 +40,7 @@ const HeaderJsx = () => {
     };
 
     const handleAvatarClick = () => {
-        navigate("/assets");
+        navigate("/assets?type=" + SelectStatus.bindBox);
     };
 
     //TODO: 优化， 每次都会执行

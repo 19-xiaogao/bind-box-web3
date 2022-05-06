@@ -10,6 +10,7 @@ import { notificationInfo, notificationSuccess, msFormatTime } from "@/utils";
 import { queryNftApi, transferFromNftApi, queryTransferHistory, nftRevertApi } from "@/api/api"
 import { IMetamaskErrResponse } from "@/types/metamask";
 import "./nftDetails.scss"
+import { SelectStatus } from "@/types";
 
 
 const { Panel } = Collapse;
@@ -29,6 +30,8 @@ export const NftDetailJsx = () => {
     const [transferHistory, setTransferHistory] = useState([])
 
     const id = searchParams.get("id") as string;
+    const sidebarParamsType = searchParams.get("type") as unknown as SelectStatus;
+
 
     const contextValue = useContext(context)
 
@@ -47,7 +50,7 @@ export const NftDetailJsx = () => {
             if (result.status) {
                 contextValue.handleSetGlobalLoading(false)
                 notificationSuccess("赠送成功")
-                setTimeout(() => { navigate('/assets') }, 2000)
+                setTimeout(() => { navigate('/assets?type=1') }, 2000)
             }
         } catch (error: IMetamaskErrResponse | any) {
             if (error.code === 4001) {
@@ -67,7 +70,7 @@ export const NftDetailJsx = () => {
             notificationSuccess("您成功拆分了NFT")
             contextValue.handleSetGlobalLoading(false)
             setTimeout(() => {
-                navigate('/assets')
+                navigate('/assets?type=1')
             }, 1000);
         } catch (error: IMetamaskErrResponse | any) {
             contextValue.handleSetGlobalLoading(false)
