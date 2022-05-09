@@ -12,7 +12,7 @@ import {
     queryGetRulesApi,
 } from "./DRC721Api";
 
-const DBOperationContractAddress = "0x536D3b6B9899Df65b4d32072f1Cf34971Ec80229";
+const DBOperationContractAddress = "0xB16A8A559996E1E5cc9B2e5a6757efb148303927";
 
 export function initDBOperationContract() {
     const provider = getProvider();
