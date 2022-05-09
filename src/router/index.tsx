@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../views/Home";
-// import AllBindBox from "../views/allBIndBox";
-
-const AllBindBox = React.lazy(() => import("../views/allBIndBox"));
-import BindBoxDetailJsx from "../views/blindBoxDetails";
-import PersonAssetJsx from "../views/personalAssets";
-import OpenBindBoxJsx from "../views/openBIndBox";
-import NftDetailJsx from "@/views/nftDetails";
 import ContextJSX from "@/components/hooks/globalContent"
+
+const AllBindBox = React.lazy(() => import("@/views/allBIndBox"));
+const BindBoxDetailJsx = React.lazy(() => import("@/views/blindBoxDetails"));
+const PersonAssetJsx = React.lazy(() => import("@/views/personalAssets"));
+const OpenBindBoxJsx = React.lazy(() => import("@/views/openBIndBox"));
+const NftDetailJsx = React.lazy(() => import("@/views/nftDetails"));
 
 
 interface SuspenseComponentI {
@@ -40,10 +39,26 @@ const RouterJsx = () => {
                             <AllBindBox />
                         </SuspenseComponent>
                     } />
-                    <Route path="/bindBoxDetails" element={<BindBoxDetailJsx />} />
-                    <Route path="/assets" element={<PersonAssetJsx />} />
-                    <Route path="/openBindBox" element={<OpenBindBoxJsx />} />
-                    <Route path="/nftDetailJsx" element={<NftDetailJsx />} />
+                    <Route path="/bindBoxDetails" element={
+                        <SuspenseComponent>
+                            <BindBoxDetailJsx />
+                        </SuspenseComponent>
+                    } />
+                    <Route path="/assets" element={
+                        <SuspenseComponent>
+                            <PersonAssetJsx />
+                        </SuspenseComponent>
+                    } />
+                    <Route path="/openBindBox" element={
+                        <SuspenseComponent>
+                            <OpenBindBoxJsx />
+                        </SuspenseComponent>
+                    } />
+                    <Route path="/nftDetailJsx" element={
+                        <SuspenseComponent>
+                            <NftDetailJsx />
+                        </SuspenseComponent>
+                    } />
                 </Routes>
             </ContextJSX>
 
