@@ -4,6 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { IMetamaskErrResponse, SelectStatus } from "@/types";
 import { notificationInfo, notificationSuccess } from "@/utils/index";
 import "./header.scss";
+const params = {
+    chainId: "0x2328",
+    chainName: "DbChain",
+    nativeCurrency: {
+        name: "DBC",
+        symbol: "DBC",
+        decimals: 18,
+    },
+    rpcUrls: ['https://ctrlpanel.dbchain.cloud/ws'],
+    blockExplorerUrls: ["https://scan.dbchain.cloud/deal/list"]
+};
 
 const HeaderJsx = () => {
     const [currentAccount, setCurrentAccount] = useState("");
@@ -14,8 +25,16 @@ const HeaderJsx = () => {
         if (!ethereum) return notificationInfo("您没有安装小狐狸钱包,请先去安装。");
         try {
             const result = await window.ethereum.request({ method: "eth_requestAccounts" });
+
+            const wallet_addEthereumChain = await window.ethereum
+                .request({
+                    method: 'wallet_addEthereumChain',
+                    params: [params, result],
+                })
+            console.log(wallet_addEthereumChain);
             setCurrentAccount(result);
             notificationSuccess("您同意了网站授权。");
+
         } catch (error: IMetamaskErrResponse | any) {
             if (error.code === 4001) {
                 notificationInfo("您拒绝了网站授权。");
