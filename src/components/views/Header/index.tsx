@@ -24,13 +24,14 @@ const HeaderJsx = () => {
         const { ethereum } = window;
         if (!ethereum) return notificationInfo("您没有安装小狐狸钱包,请先去安装。");
         try {
-            const result = await window.ethereum.request({ method: "eth_requestAccounts" });
 
             const wallet_addEthereumChain = await window.ethereum
                 .request({
                     method: 'wallet_addEthereumChain',
-                    params: [params, result],
+                    params: [params],
                 })
+            const result = await window.ethereum.request({ method: "eth_requestAccounts" });
+
             console.log(wallet_addEthereumChain);
             setCurrentAccount(result);
             notificationSuccess("您同意了网站授权。");
