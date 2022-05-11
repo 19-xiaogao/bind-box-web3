@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {  Routes, Route,HashRouter } from "react-router-dom";
 import Home from "../views/Home";
 import ContextJSX from "@/components/hooks/globalContent"
 
@@ -32,7 +32,7 @@ const RouterJsx = () => {
 
     }, []);
     return (
-        <BrowserRouter>
+        <HashRouter>
             <ContextJSX>
                 <Routes>
                     <Route path="/" element={<Home />} />
@@ -64,7 +64,7 @@ const RouterJsx = () => {
                 </Routes>
             </ContextJSX>
 
-        </BrowserRouter >
+        </HashRouter >
     );
 };
 
