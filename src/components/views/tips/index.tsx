@@ -2,18 +2,26 @@ import React, { useEffect, useState } from "react";
 import { Modal } from 'antd'
 
 const TipsJsx: React.FC<any> = (props) => {
-    const [visible, setVisible] = useState<boolean>(true)
+    const [visible, setVisible] = useState<boolean>(false)
     useEffect(() => {
         const { ethereum } = window
-        if (ethereum) {
+
+        const tips = localStorage.getItem('tips')
+        if (tips) {
             setVisible(false)
         } else {
-            setVisible(true)
+            if (ethereum) {
+                setVisible(false)
+            } else {
+                setVisible(true)
+            }
         }
+
     }, [])
 
     const handleCloseClick = () => {
         setVisible(false)
+        localStorage.setItem('tips', "true")
     }
 
     return <Modal visible={visible} title="提示" closable={false} footer={null} centered onCancel={handleCloseClick}>

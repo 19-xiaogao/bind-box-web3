@@ -6,5 +6,5 @@ const netWork = import.meta.env.MODE === "development" ? developmentNetWork : pr
 
 export default {
     appCode: "FLFHYQ1AET",
-    netWork: prodNetWork,
+    netWork,
 };
