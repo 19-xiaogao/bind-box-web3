@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import FooterJSX from "@/components/views/footer";
 import HeaderJsx from "@/components/views/Header";
 import BannerJsx from "@/components/views/banner";
+import TipsJsx from "@/components/views/tips"
 import { BindBoxInterface } from "@/types"
 import { queryBindBoxApi } from "@/api/api";
 import "./home.scss";
@@ -47,6 +48,7 @@ const HomeJsx = () => {
         <div className="root-page">
             <HeaderJsx />
             <BannerJsx />
+            <TipsJsx />
             <main>
                 <div className="recommended">
                     <h1>推荐盲盒</h1>
@@ -55,6 +57,7 @@ const HomeJsx = () => {
                 <div className="re-bind-box">{renderBindList()}</div>
             </main>
             <FooterJSX />
+            
         </div>
     );
 };
