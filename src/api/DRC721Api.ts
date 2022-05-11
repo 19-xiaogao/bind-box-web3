@@ -15,10 +15,20 @@ export function initDRC721Contract(contractAddress: string) {
 
 export const buyTicketsApi = (count: number, price: number, contractAddress: string) => {
     const DRC721Contract = initDRC721Contract(contractAddress);
-
-    return DRC721Contract["buyTickets"](count, {
-        // gasLimit: 300000,
-        value: ethers.utils.parseEther(String(price)),
+    return new Promise((resolve, reject) => {
+        DRC721Contract["buyTickets"](count, {
+            // gasLimit: 300000,
+            value: ethers.utils.parseEther(String(price)),
+        })
+            .then((result: any) => {
+                const provider = getProvider();
+                provider.once(result.hash, (receipt) => {
+                    if (receipt.transactionHash === result.hash) {
+                        resolve(true);
+                    }
+                });
+            })
+            .catch((err: IMetamaskErrResponse) => reject(err));
     });
 };
 

@@ -91,8 +91,9 @@ function BindBoxDetailJsx() {
                 bindDetailBox.contract_address
             );
             contextValue.handleSetGlobalLoading(false)
+            queryBindBoxDetail()
             setBuyCount(1)
-            notificationSuccess("购买成功,区块上链中...");
+            notificationSuccess("购买成功");
         } catch (error: IMetamaskErrResponse | any) {
             contextValue.handleSetGlobalLoading(false)
             if (error.code === 4001) {
