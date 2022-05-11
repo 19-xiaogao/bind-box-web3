@@ -39,10 +39,12 @@ export function createAccessToken() {
 }
 
 export function getProvider() {
-    if (window.ethereum.selectedAddress && parseInt(window.ethereum.chainId) === 9000) {
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-
-        return provider;
+    if (window.ethereum) {
+        if (window.ethereum.selectedAddress && parseInt(window.ethereum.chainId) === 9000) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            return provider;
+        }
     }
+
     return new ethers.providers.JsonRpcProvider(DBchainConfig.netWork);
 }

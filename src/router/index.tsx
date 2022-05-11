@@ -24,9 +24,11 @@ const SuspenseComponent = (props: any) => {
 const RouterJsx = () => {
     useEffect(() => {
         // 监听账户发生变化
-        window.ethereum.on("accountsChanged", (accounts: string[]) => {
-            window.location.href = "/";
-        });
+        if (window.ethereum) {
+            window.ethereum.on("accountsChanged", (accounts: string[]) => {
+                window.location.href = "/";
+            });
+        }
 
     }, []);
     return (
